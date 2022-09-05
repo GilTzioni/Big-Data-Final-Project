@@ -1,0 +1,150 @@
+*{
+    font-family: "Rimouski";
+}
+
+body{
+    background-color: #f5f6fa;
+}
+
+.container{
+    width:201px;
+	height:50px;
+    
+    display: block;
+    /* margin: 0 auto; */
+    
+    border-radius: 10px;
+    /* padding-bottom : 40px;  */
+}
+
+/* .app-title{
+    width: 100px;
+    height: 10px;
+    border-radius: 10px 10px 0 0;
+} */
+
+/* .app-title p{
+    padding: 5px;
+    margin: 0 auto;
+    font-size: 1.2em;
+    color: #293251;
+} */
+
+.notification{
+    background-color: #f8d7da;
+    display: none;
+    width: 10px;
+    height: 10px;
+}
+
+.notification p{
+    color: #721c24;
+    /* font-size: 1.2em; */
+    margin: 0;
+    /* text-align: center; */
+    /* padding: 5px; */
+    width: 10px;
+    height: 10px;
+}
+
+.weather-container{
+    width: 0px;
+    height: 0px;
+    background-color: hsl(16, 78%, 51%);
+    border-radius:8px;
+}
+
+.weather-icon{
+    width: 30px;
+    height: 10px;
+    position: absolute;
+
+}
+
+.weather-icon img{
+    display: block;
+    margin: 0 auto;
+    width: 30px;
+    height:20px;
+    float:right;
+    position: absolute;
+}
+
+.temperature-value{
+    width: 20px;
+    height:20px;
+    position: absolute;
+    /* padding-top: 20px; */
+}
+
+.temperature-value p{
+    width: 30px;
+    height:20px;
+    padding-left:5px;
+    margin: 0;
+    padding-top:20px;
+    color: #293251;
+    position: absolute;
+    font-size: 1em;
+    
+    cursor: pointer;
+}
+
+.temperature-value p:hover{
+    /* width: 30px;
+    height:30px;
+     */
+}
+
+.temperature-value span{
+    color: #293251;
+    font-size: 0.5em;
+    width: 30px;
+    height:30px;
+}
+
+.temperature-description{
+    width: 10px;
+    height:5px;
+    /* padding-left: 25px; */
+    /* float:right; */
+}
+
+.temperature-description p{
+    width: 10px;
+    height:5px;
+    /* padding-left: 25px; */
+    /* float:right; */
+    /* margin: 0; */
+    margin-left:50px;
+    color: #293251;
+    position: absolute;
+    /* text-align: center; */
+    font-size: 0.8em;
+}
+
+.location{
+    /* margin-left:50px; */
+    /* width: 20px;
+    height:20px; */
+    
+   
+}
+
+.location p{
+    width: 20px;
+    height:10px;
+    float:left;
+    /* margin-bottom:50px; */
+    margin-left:150px;
+    padding: 0;
+    color: #293251;
+    margin-top:10px;
+    margin-right: 1px;
+    position: absolute;
+    /* text-align: center; */
+    font-size: 0.8em;
+}
+
+
+

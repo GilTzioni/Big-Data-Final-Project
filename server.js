@@ -3,7 +3,7 @@ const app = express();
 const Port = process.env.PORT || 3000;
 var server = require('http').createServer(app);
 
-//--------------Middleware------------------
+//Middleware
 app.set('view engine', 'ejs');
 app.use(express.json());
 
