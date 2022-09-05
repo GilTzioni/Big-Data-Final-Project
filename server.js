@@ -23,19 +23,18 @@ kafka.consumer.on("data", async (msg) => {
     {   
 
         io.emit("New_Flights",
-        {numflight: newFlights.numflight, flightname: newFlights.flightname});
+        {numflight: newFlights.numflight, flightname: newFlights.flightname, from: newFlights.from});
 
-        redis.setTopic(newFlights.topic,0);
-        redis.setCity(newFlights.city);
-        redis.setAverageTime(newFlights.totalTime);
+        redis.setNumFlight(newFlights.numflight);
+        redis.setFlightName(newFlights.flightname);
+        redis.setFlightFrom(newFlights.from);
     }
 
     //Get data from redis to dashboard
     let allDataArray = await redis.getAllData();
-    let getAverageTime = await redis.getAverageTime();
     
     //Send to front with socket
     io.emit('allData',
     {join: allDataArray[0],service: allDataArray[1], complaint: allDataArray[2] ,
-         leave: allDataArray[3], waiting: allDataArray[4], averageTotalTime: getAverageTime});
+         leave: allDataArray[3], waiting: allDataArray[4]});
 });
