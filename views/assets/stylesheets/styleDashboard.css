@@ -96,37 +96,4 @@ head{
 	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
 	background-color:#408c99;
 }
-/* .b2:active {
-	position:relative;
-	top:1px;
-} */
-#b3{
-	border: 2px solid black; 
-	position: absolute;
-    left:750px;
-    margin-top:20px;
-	width:200px;
-	height:50px; 
-	box-shadow: 0px 10px 14px -7px #d16721;
-	background:linear-gradient(to bottom, #dc7230 5%, #e3a76f 100%);
-	background-color: hsl(16, 78%, 51%);
-	border-radius:8px;
-	display:inline-block;
-	cursor:pointer;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:15px;
-	font-weight:bold;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #3d768a;
-	
-}
-.b3:hover {
-	background:linear-gradient(to bottom, #c56a15 5%, #c65c1a 100%);
-	background-color:#e05d17;
-}
-.b3:active {
-	position:relative;
-	top:1px;
-}
 
