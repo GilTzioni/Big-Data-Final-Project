@@ -6,10 +6,111 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../assets/stylesheets/styleDashboard.css"/>
-  <a class="b2" href="/flight" role="link"><div class="textb2">טיסות ממתינות להמראה </div></bar><div class="numFlight"><%= numFlight %></div></a>
-   
+  <a class="b2" href="/flight" role="link"><div class="textb2">טיסות ממתינות להמראה </div></bar><div class="numFlight"><%= numFlight %></div></a>   
   <a class="b1" href="/landing" role="link"><div class="textb1">טיסות ממתינות לנחיתה </div></bar><div class="numLanding"><%= numLanding %></div></a>
-</head>
-<body>
 
+  <script type="text/javascript">
+    var map = null;
+    function setMap() {
+        // Initialize the map - USE YOUR OWN KEY !
+        map = new Microsoft.Maps.Map(document.getElementById("myMap"), { credentials: "Am7ABZsl1hVs093AjZV82C3wxd-NCQ-KtBLpdtv4uB1UBvqIx7vcgN7Dw1A9RpQt" });
+
+    }
+</script>
+
+<script type='text/javascript'>
+    function add()
+    {
+        var loc1 = new Microsoft.Maps.Location(37.983810,23.727539);
+        var loc2 = new Microsoft.Maps.Location(32.817280,34.988762);
+        var loc3 = new Microsoft.Maps.Location(30.044420, 31.235712);
+        var loc4 = new Microsoft.Maps.Location(35.0, 30.0);
+      
+        // Add a pin to the map
+        var pin1 = new Microsoft.Maps.Pushpin(loc1, {
+           icon:"icons/airplane.png",
+            anchor: new Microsoft.Maps.Point(10, 10)
+        });
+        var pin2 = new Microsoft.Maps.Pushpin(loc2, {
+           icon:"icons/airplane_down.png",
+            anchor: new Microsoft.Maps.Point(10, 10)
+        });
+        var pin3 = new Microsoft.Maps.Pushpin(loc3, {
+            
+           icon:"icons/airplane_left.png",
+            anchor: new Microsoft.Maps.Point(10, 10)
+        });
+        
+        pin4 = new Microsoft.Maps.Pushpin(loc4, {
+            icon:"icons/airplane_right.png",
+            anchor: new Microsoft.Maps.Point(10, 10)
+        });
+       
+        // Create a polyline
+       //  var lineVertices = new Array(loc1, loc2);
+       //  var line = new Microsoft.Maps.Polyline(lineVertices);
+
+        map.setView({ center: loc2, zoom: 4 });
+
+       //  map.entities.push(line);
+        map.entities.push(pin1);
+        map.entities.push(pin2);
+        map.entities.push(pin3);
+        map.entities.push(pin4);
+       
+
+    }
+    function move() {
+        for (var i = map.entities.getLength() - 1; i >= 0; i--) {
+            var pushpin = map.entities.get(i);
+            if (pushpin instanceof Microsoft.Maps.Pushpin) {
+                map.entities.removeAt(i);
+            }
+        }
+    }       
+   
+</script>
+<script language="JavaScript">
+          
+    function clockBlock() {
+
+          var timeNow=new Date();
+
+           var hrs=timeNow.getHours();
+           var min=timeNow.getMinutes();
+           var sec=timeNow.getSeconds();
+           var amPm="AM";
+
+           if (hrs==0) {
+                  hrs=12;
+           }
+           if (hrs>12) {
+                   amPm="PM";
+                   hrs=hrs-12;
+           }
+           if (hrs<10) {
+                   hrs="0"+hrs;
+           }
+           if (min<10) {
+                   min="0"+min;
+           }
+           if (sec<10) {
+                   sec="0"+sec;
+           }
+
+          var printClock=document.getElementById('clockDisplay');
+          printClock.textContent=hrs+":"+min+":"+sec+" "+amPm;
+          printClock.innerText=hrs+":"+min+":"+":"+sec+" "+amPm;
+
+           setTimeout('clockBlock()',1000);
+
+    } 
+    </script>
+</head>
+<body onLoad="clockBlock() + setMap()">
+    <input id="badd" type="button" onclick="add()" value="הוסף אייקונים" />
+    <input id="bremove" type="button" onclick="move()" value="הסר אייקונים" />
+    <div id="myMap"></div>
+    <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AlKPvaFLRlENPR8sZ4FW3dgnTZ1wI2vL09O0j4VW574mAWA16ph-fzxr0KLTNWL1' async defer></script> 
+    <div id="clockDisplay" class="clockDesign" dir="ltr"><br/></div>
 </body>
