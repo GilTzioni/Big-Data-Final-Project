@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const Port = process.env.PORT || 3000;
 var server = require('http').createServer(app);
+const controllerRouter = require('./routes/controller'); //controller
 
 //Middleware
 app.set('view engine', 'ejs');
