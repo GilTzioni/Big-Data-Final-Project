@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const Port = process.env.PORT || 3000;
 var server = require('http').createServer(app);
+
 const kafka = require('./models/kafkaConsume');
 
 const controllerRouter = require('./routes/controller'); //controller
@@ -13,3 +14,28 @@ app.use(express.json());
 app.use('/', controllerRouter);
 server.listen(Port, () => console.log(`Server B is listening at http://localhost:${Port}`));
 
+//Consumer kafka
+kafka.consumer.on("data", async (msg) => {
+    const newFlights = JSON.parse(msg.value);
+
+    // **Store the data in Redis and after send to Dashboard */
+    if(String(msg.value).includes("topic")) // Details calls
+    {   
+
+        io.emit("New_Flights",
+        {numflight: newFlights.numflight, flightname: newFlights.flightname});
+
+        redis.setTopic(newFlights.topic,0);
+        redis.setCity(newFlights.city);
+        redis.setAverageTime(newFlights.totalTime);
+    }
+
+    //Get data from redis to dashboard
+    let allDataArray = await redis.getAllData();
+    let getAverageTime = await redis.getAverageTime();
+    
+    //Send to front with socket
+    io.emit('allData',
+    {join: allDataArray[0],service: allDataArray[1], complaint: allDataArray[2] ,
+         leave: allDataArray[3], waiting: allDataArray[4], averageTotalTime: getAverageTime});
+});
