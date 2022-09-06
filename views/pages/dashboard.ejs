@@ -161,9 +161,9 @@
                 let fly = { length, width, degrees };
                 return fly;
             }
-            socket.on('new_flight', function (msg) {
+            socket.on('newFlights', function (msg) {
                 console.log(msg.direction);
-                let flight = flight(msg.length, msg.width, msg.degrees);
+                let flight = flight(msg.numFlight,msg.from,msg.to,msg.length, msg.width, msg.degrees);
                 if (msg.direction==0){
                     flights[numFlight++] = flight;
                 }

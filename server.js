@@ -39,15 +39,27 @@ kafka.consumer.on("data", async (msg) => {
     const newFlights = JSON.parse(msg.value);
 
     // **Store the data in Redis and after send to Dashboard */
-    if(String(msg.value).includes("topic")) // Details calls
+    if(String(msg.value).includes("flights")) // Details flights
+    {   
+
+        io.emit("newFlights",
+        {numFlight: newFlights.numFlight, from: newFlights.from, to: newFlights.to,
+             length: newFlights.length, width: newFlights.width, degrees: newFlights.degrees});
+
+        redis.setNumFlight(newFlights.numFlight);
+        redis.setFrom(newFlights.from);
+        redis.setTo(newFlights.to);
+    }
+
+    if(String(msg.value).includes("landings")) // Details flights
     {   
 
         io.emit("New_Flights",
-        {numflight: newFlights.numflight, flightname: newFlights.flightname, from: newFlights.from});
+        {numFlight: newFlights.numFlight, from: newFlights.from, to: newFlights.to});
 
-        redis.setNumFlight(newFlights.numflight);
-        redis.setFlightName(newFlights.flightname);
-        redis.setFlightFrom(newFlights.from);
+        redis.setNumFlight(newFlights.numFlight);
+        redis.setFrom(newFlights.from);
+        redis.setTo(newFlights.to);
     }
 
     //Get data from redis to dashboard
