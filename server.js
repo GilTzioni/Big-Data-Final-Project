@@ -6,12 +6,15 @@ var server = require('http').createServer(app);
 const kafka = require('./models/kafkaConsume');
 
 const controllerRouter = require('./routes/controller'); //controller
-
+const landingsRouter = require('./routes/landings');
+const flightsRouter = require('./routes/flights');
 //Middleware
 app.set('view engine', 'ejs');
 app.use(express.json());
 
 app.use('/', controllerRouter);
+app.use('/', landingsRouter);
+app.use('/', flightsRouter);
 server.listen(Port, () => console.log(`Server B is listening at http://localhost:${Port}`));
 
 //Consumer kafka
