@@ -3,7 +3,7 @@ const app = express();
 const Port = process.env.PORT || 3000;
 var server = require('http').createServer(app);
 
-const kafka = require('./models/kafkaConsume');
+const kafka = require('./models/kafkaConsumer');
 
 const controllerRouter = require('./routes/controller'); //controller
 const landingsRouter = require('./routes/landings');
