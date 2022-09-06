@@ -5,9 +5,16 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+
   <link rel="stylesheet" href="../assets/stylesheets/styleDashboard.css"/>
-  <a class="b2" href="/flights" role="link"><div class="textb2">טיסות ממתינות להמראה </div></bar><div class="numFlight"><%= numFlight %></div></a>   
-  <a class="b1" href="/landings" role="link"><div class="textb1">טיסות ממתינות לנחיתה </div></bar><div class="numLanding"><%= numLanding %></div></a>
+
+  <a class="b2" href="/flights" role="link"><div class="textb2">טיסות ממתינות להמראה </div></bar><div class="numFlight" id="numFlight"></div></a>   
+  
+  <a class="b1" href="/landings" role="link"><div class="textb1">טיסות ממתינות לנחיתה </div></bar><div class="numLanding" id="numLanding"></div></a>
+  
   <div id="b3">
     <link rel="stylesheet" href="../assets/font/Rimouski.css">
      <link rel="stylesheet" href="../assets/stylesheets/styleWeather.css">
@@ -34,7 +41,8 @@
   </div>
   
 </div>
-  <script type="text/javascript">
+ 
+<script type="text/javascript">
     var map = null;
     function setMap() {
         map = new Microsoft.Maps.Map(document.getElementById("myMap"), { credentials: "AlKPvaFLRlENPR8sZ4FW3dgnTZ1wI2vL09O0j4VW574mAWA16ph-fzxr0KLTNWL1" });
@@ -69,11 +77,7 @@
             icon:"../assets/icons/airplane_right.png",
             anchor: new Microsoft.Maps.Point(10, 10)
         });
-       
-        // Create a polyline
-       //  var lineVertices = new Array(loc1, loc2);
-       //  var line = new Microsoft.Maps.Polyline(lineVertices);
-
+      
         map.setView({ center: loc2, zoom: 4 });
 
        //  map.entities.push(line);
@@ -94,6 +98,7 @@
     }       
    
 </script>
+
 <script language="JavaScript">
           
     function clockBlock() {
@@ -130,8 +135,56 @@
 
     } 
     </script>
+
+    <script type="text/javascript">
+        var flights = {};
+        var landings = {};
+        let numFlight = 0;
+        let numLanding = 0;
+        var map = null;
+        
+        function initSocket() {
+            //socket is global
+            socket = io.connect();
+            alert("connected");
+            setMap();
+            clockBlock();
+            startTime();
+            flights = {};
+            landings = {};
+            numFlight = 0;
+            numLanding = 0;
+            const flight = (x, y, z) => {
+                let length = x;
+                let width = y;
+                let degrees = z;
+                let fly = { length, width, degrees };
+                return fly;
+            }
+            socket.on('new_flight', function (msg) {
+                console.log(msg.direction);
+                let flight = flight(msg.length, msg.width, msg.degrees);
+                if (msg.direction==0){
+                    flights[numFlight++] = flight;
+                }
+                else{
+                    landings[numLanding++] = flight;
+                }
+                document.getElementById('numFlight').innerHTML = numFlight;
+                document.getElementById('numLanding').innerHTML = numLanding;
+                //console.log(counter);
+            });
+            socket.on('allData', function (msg) {
+               
+            });
+        }
+        function resetInfo() {
+            socket.emit('resetDB');
+        }
+    </script>
 </head>
-<body onLoad="clockBlock() + setMap()">
+
+<body onLoad="initSocket()">
     <input id="badd" type="button" onclick="add()" value="הוסף אייקונים" />
     <input id="bremove" type="button" onclick="move()" value="הסר אייקונים" />
     <div id="myMap"></div>

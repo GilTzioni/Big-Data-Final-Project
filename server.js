@@ -2,20 +2,37 @@ const express = require('express');
 const app = express();
 const Port = process.env.PORT || 3000;
 var server = require('http').createServer(app);
+const io = require("socket.io")(server, {
+    allowEIO3: true // false by default
+});
 
 const kafka = require('./models/kafkaConsumer');
-
-const controllerRouter = require('./routes/controller'); //controller
+const redis = require("./models/redisDB");
+const controllerRouter = require('./routes/controller'); 
 const landingsRouter = require('./routes/landings');
 const flightsRouter = require('./routes/flights');
+
 //Middleware
 app.set('view engine', 'ejs');
 app.use(express.json());
 
-app.use('/', controllerRouter);
-app.use('/', landingsRouter);
-app.use('/', flightsRouter);
-server.listen(Port, () => console.log(`Server B is listening at http://localhost:${Port}`));
+
+//Socket.io
+io.on("connection", async (socket) => {
+    //Get data from redis to dashboard
+    let allDataArray = await redis.getAllData();
+    
+    //Move to dashboard - number of calls by topics & number of waiting & number of calls by cities
+    io.emit('allData', 
+    {});
+
+    //Reset Info Manualiy
+    socket.on('resetDB', function () {
+        // reset redis
+        redis.initDB(); 
+    });
+
+});
 
 //Consumer kafka
 kafka.consumer.on("data", async (msg) => {
@@ -41,3 +58,9 @@ kafka.consumer.on("data", async (msg) => {
     {join: allDataArray[0],service: allDataArray[1], complaint: allDataArray[2] ,
          leave: allDataArray[3], waiting: allDataArray[4]});
 });
+
+app.use('/', controllerRouter);
+app.use('/', landingsRouter);
+app.use('/', flightsRouter);
+
+server.listen(Port, () => console.log(`Server B is listening at http://localhost:${Port}`));

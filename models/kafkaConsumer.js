@@ -48,8 +48,7 @@ const kafkaConf = {
   });
 
   consumer.on('event.log', function(log) {
-    console.log("3");
-    console.log(log);
+      console.log(log);
   });
 
   
