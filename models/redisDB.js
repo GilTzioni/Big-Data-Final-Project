@@ -17,6 +17,12 @@ const redisDB = {
     getAllData: async function() {
         let allData = [];
 
+        allData.push(await db.get('landings'));
+        allData.push(await db.get('flights'));
+        allData.push(await db.get('locations'));
+        allData.push(await db.get('leave'));
+        allData.push(await db.get('weather'));
+
        
         console.log("Get all data from Redis!");
         return allData;
