@@ -14,11 +14,22 @@ const kafkaConf = {
   
   const prefix = "jake66n3-";
   const topic = `${prefix}new`;
-  const producer = new Kafka.Producer(kafkaConf);
   
   const topics = [topic];
   const consumer = new Kafka.KafkaConsumer(kafkaConf, {
     "auto.offset.reset": "beginning"
+  }); 
+
+  consumer.on("ready", function(arg) {
+    console.log(`Consumer ${arg.name} ready - for Redis & Dashboard`);
+    consumer.subscribe(topics);
+    console.log("Subscribed.");
+    //start consuming messages
+    consumer.consume();
+  });
+
+  consumer.on("data", function(m) {
+    console.log("DATA IN DA HOUSe");
   });
 
   consumer.on("error", (err) => {
@@ -27,7 +38,7 @@ const kafkaConf = {
   });
 
     consumer.on("disconnected", (arg)=> {
-    console.log("2");
+      console.log('consumer disconnected. ' + JSON.stringify(arg));
     process.exit();
   });
 
@@ -41,6 +52,12 @@ const kafkaConf = {
     console.log(log);
   });
 
+  
+// //starting the consumer
+// consumer.connect({}, function(err, d) {
+//   console.log(err);
+//   console.log(d)
+// });
   consumer.connect();
 
   module.exports.consumer = consumer;
