@@ -39,16 +39,17 @@ kafka.consumer.on("data", async (msg) => {
     const newFlights = JSON.parse(msg.value);
 
     // **Store the data in Redis and after send to Dashboard */
-    if(String(msg.value).includes("flights")) // Details flights
+    if(String(msg.value).includes("flight")) // Details flights
     {   
 
         io.emit("newFlights",
         {numFlight: newFlights.numFlight, from: newFlights.from, to: newFlights.to,
              length: newFlights.length, width: newFlights.width, degrees: newFlights.degrees});
 
-        redis.setNumFlight(newFlights.numFlight);
+        redis.setFlights(newFlights.numFlight);
         redis.setFrom(newFlights.from);
         redis.setTo(newFlights.to);
+        redis.setLocation(newFlights.length,newFlights.width, newFlights.degrees );
     }
 
     if(String(msg.value).includes("landings")) // Details flights
