@@ -49,7 +49,7 @@ kafka.consumer.on("data", async (msg) => {
         redis.setFlights(newFlights.numFlight);
         redis.setFrom(newFlights.from);
         redis.setTo(newFlights.to);
-        redis.setLocation(newFlights.length,newFlights.width, newFlights.degrees );
+        redis.setLocation(newFlights.length,newFlights.width, newFlights.degrees);
     }
 
     if(String(msg.value).includes("landings")) // Details flights
