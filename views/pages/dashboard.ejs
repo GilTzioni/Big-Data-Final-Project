@@ -246,7 +246,8 @@ tempElement.addEventListener("click", function(){
          {
             socket.emit('resetDB');
          }
-       //  --------------------------------------------------------------
+         
+ //landings/flights table  ----------------------------------------------------------------------
  
        const openModalButtons = document.querySelectorAll('[data-modal-target]')
         const closeModalButtons = document.querySelectorAll('[data-close-button]')
@@ -322,7 +323,7 @@ var modal = document.getElementById("modal");
                 cell3.innerHTML = dest;
                 cell4.innerHTML = estimateDarrival;
             }
- //------------------------------------------------------------------
+ //--------------------------------------------------------------------------------------
        // Add a pin to the map
         function add()
          {

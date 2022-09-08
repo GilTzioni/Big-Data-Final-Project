@@ -11,7 +11,8 @@ const redis = require("./models/redisDB");
 const controllerRouter = require('./routes/controller'); 
 const landingsRouter = require('./routes/landings');
 const flightsRouter = require('./routes/flights');
-
+var bodyParser = require('body-parser')
+const { Console } = require('console');
 //Middleware
 app.set('view engine', 'ejs');
 app.use(express.json());
@@ -20,11 +21,8 @@ app.use(express.json());
 //Socket.io
 io.on("connection", async (socket) => {
     //Get data from redis to dashboard
-    let allDataArray = await redis.getAllData();
+    let allData = await redis.getAllData();
     
-    //Move to dashboard - number of calls by topics & number of waiting & number of calls by cities
-    io.emit('allData', 
-    {});
 
     //Reset Info Manualiy
     socket.on('resetDB', function () {
