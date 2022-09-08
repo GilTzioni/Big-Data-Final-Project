@@ -136,62 +136,9 @@ tempElement.addEventListener("click", function(){
   </script>
 </div>
  
-<script type="text/javascript">
-    var map = null;
-    function setMap() {
-        map = new Microsoft.Maps.Map(document.getElementById("myMap"), { credentials: "AlKPvaFLRlENPR8sZ4FW3dgnTZ1wI2vL09O0j4VW574mAWA16ph-fzxr0KLTNWL1" });
 
-    }
-</script>
 
-<script type='text/javascript'>
-    function add()
-    {
-        var loc1 = new Microsoft.Maps.Location(37.983810,23.727539);
-        var loc2 = new Microsoft.Maps.Location(32.817280,34.988762);
-        var loc3 = new Microsoft.Maps.Location(30.044420, 31.235712);
-        var loc4 = new Microsoft.Maps.Location(35.0, 30.0);
-      
-        // Add a pin to the map
-        var pin1 = new Microsoft.Maps.Pushpin(loc1, {
-           icon:'<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21.000000 21.000000" preserveAspectRatio="xMidYMid meet" style="transform: rotate(45deg);"> <g transform="translate(0.000000,21.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none"> <path d="M96 173 c-3 -3 -6 -15 -6 -25 0 -10 -11 -23 -24 -28 -37 -14 -42 -31 -8 -24 35 7 54 -23 27 -42 -15 -11 -15 -13 2 -16 10 -2 26 -2 36 0 16 4 16 5 1 17 -11 8 -15 19 -10 30 5 13 13 16 37 11 35 -7 31 10 -7 24 -14 6 -24 18 -24 29 0 21 -13 35 -24 24z"/> </g> </svg>',
-            anchor: new Microsoft.Maps.Point(10, 10)
-        });
-        var pin2 = new Microsoft.Maps.Pushpin(loc2, {
-           icon:"../assets/icons/airplane_down.png",
-            anchor: new Microsoft.Maps.Point(10, 10)
-        });
-        var pin3 = new Microsoft.Maps.Pushpin(loc3, {
-            
-           icon:"../assets/icons/airplane_left.png",
-            anchor: new Microsoft.Maps.Point(10, 10)
-        });
-        
-        pin4 = new Microsoft.Maps.Pushpin(loc4, {
-            icon:"../assets/icons/airplane_right.png",
-            anchor: new Microsoft.Maps.Point(10, 10)
-        });
-      
-        map.setView({ center: loc2, zoom: 4 });
 
-       //  map.entities.push(line);
-        map.entities.push(pin1);
-        map.entities.push(pin2);
-        map.entities.push(pin3);
-        map.entities.push(pin4);
-       
-
-    }
-    function move() {
-        for (var i = map.entities.getLength() - 1; i >= 0; i--) {
-            var pushpin = map.entities.get(i);
-            if (pushpin instanceof Microsoft.Maps.Pushpin) {
-                map.entities.removeAt(i);
-            }
-        }
-    }       
-   
-</script>
 
 <script language="JavaScript">
           
@@ -233,9 +180,16 @@ tempElement.addEventListener("click", function(){
     <script type="text/javascript">
         var flights = {};
         var landings = {};
+        var locations = {};
+        counterFlights = 0;
         let numFlight = 0;
         let numLanding = 0;
         var map = null;
+
+        function setMap() {
+        map = new Microsoft.Maps.Map(document.getElementById("myMap"), { credentials: "AlKPvaFLRlENPR8sZ4FW3dgnTZ1wI2vL09O0j4VW574mAWA16ph-fzxr0KLTNWL1" });
+        }
+
         
         function initSocket() {
             //socket is global
@@ -248,17 +202,16 @@ tempElement.addEventListener("click", function(){
             landings = {};
             numFlight = 0;
             numLanding = 0;
-            const flight = (x, y, z) => {
-                let length = x;
-                let width = y;
-                let degrees = z;
-                let fly = { length, width, degrees };
-                return fly;
+            const flight = (width, length, degrees) => {
+               
+                let loc = {width, length, degrees };
+                return loc;
             }
             socket.on('newFlights', function (msg) {
                 console.log(msg.direction);
-                let flight = flight(msg.numFlight,msg.from,msg.to,msg.length, msg.width, msg.degrees);
-                if (msg.direction==0){
+                let flight = flight(msg.width, msg.length, msg.degrees);
+                locations[counterFlights++] = flight;
+                if (msg.direction==0){//Add a condition of if it is in the next 15 minutes
                     flights[numFlight++] = flight;
                 }
                 else{
@@ -269,12 +222,38 @@ tempElement.addEventListener("click", function(){
                 //console.log(counter);
             });
             socket.on('allData', function (msg) {
-               
             });
         }
-        function resetInfo() {
+        function resetInfo()
+         {
             socket.emit('resetDB');
+         }
+ // Add a pin to the map
+        function add()
+         {
+          
+            var loc = null;
+            var pin = null;
+            var degrees = 0;
+            for (let i = 0; i < locations; i++) {
+                degrees = locations[i].degrees;
+                loc = new Microsoft.Maps.Location(locations[i].width,locations[i].length);
+                pin = new Microsoft.Maps.Pushpin(loc, {
+                    icon:'<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21.000000 21.000000" preserveAspectRatio="xMidYMid meet" style="transform: rotate(45deg);"> <g transform="translate(0.000000,21.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none"> <path d="M96 173 c-3 -3 -6 -15 -6 -25 0 -10 -11 -23 -24 -28 -37 -14 -42 -31 -8 -24 35 7 54 -23 27 -42 -15 -11 -15 -13 2 -16 10 -2 26 -2 36 0 16 4 16 5 1 17 -11 8 -15 19 -10 30 5 13 13 16 37 11 35 -7 31 10 -7 24 -14 6 -24 18 -24 29 0 21 -13 35 -24 24z"/> </g> </svg>',
+                    anchor: new Microsoft.Maps.Point(10, 10)
+                });
+                map.setView({ center: loc, zoom: 4 });
+                map.entities.push(pin);
+            }            
+         }
+    function move() {
+        for (var i = map.entities.getLength() - 1; i >= 0; i--) {
+            var pushpin = map.entities.get(i);
+            if (pushpin instanceof Microsoft.Maps.Pushpin) {
+                map.entities.removeAt(i);
+            }
         }
+    }       
     </script>
 </head>
 
@@ -285,3 +264,6 @@ tempElement.addEventListener("click", function(){
     <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AlKPvaFLRlENPR8sZ4FW3dgnTZ1wI2vL09O0j4VW574mAWA16ph-fzxr0KLTNWL1' async defer></script> 
     <div id="clockDisplay" class="clockDesign" dir="ltr"><br/></div>
 </body>
+
+
+
