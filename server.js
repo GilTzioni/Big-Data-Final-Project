@@ -44,7 +44,7 @@ kafka.consumer.on("data", async (msg) => {
     }
     else
     {
-        redis.setTopic("flight",msg.value);
+        redis.setFlight("flight",msg.value);
         let allData = await redis.getAllData();//Get data from redis to dashboard    
         io.emit("newFlight",
         {data: JSON.parse(allData[0])}); //Send to front with socket

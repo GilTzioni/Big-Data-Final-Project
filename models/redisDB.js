@@ -12,7 +12,8 @@ const redisDB = {
         });
         console.log('initDB');
     },
-    setWaiting: async function(key, value){
+    
+    setFlight: async function(key, value){
         try
         {
             await db.set(key, value); // stores the data in the database
@@ -22,22 +23,7 @@ const redisDB = {
             console.log(error);
         }
     },
-
-    setTopic: async function(topic, value) 
-    {
-        switch(topic) 
-        {
-            case 'flight':
-                await this.setWaiting('flight', value);
-                break;
-            default:
-                console.log('invalid topic');
-                break;
-        }
-    },
-
     
-
     getAllData: async function() 
     {
         let allData = [];
