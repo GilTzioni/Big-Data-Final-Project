@@ -229,9 +229,11 @@ tempElement.addEventListener("click", function(){
                 locations[counterFlights++] = flight;
                 if (msg.direction==0){//Add a condition of if it is in the next 15 minutes
                     flights[numFlight++] = flight;
+                    flightsTable(msg.data.id, msg.data.src, msg.data.dest, msg.data.estimatedarrival);
                 }
                 else{
                     landings[numLanding++] = flight;
+                    
                 }
                 document.getElementById('numFlight').innerHTML = numFlight;
                 document.getElementById('numLanding').innerHTML = numLanding;
