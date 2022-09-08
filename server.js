@@ -49,6 +49,8 @@ kafka.consumer.on("data", async (msg) => {
         io.emit("newFlight",
         {data: JSON.parse(allData[0])}); //Send to front with socket
     }
+});
+    
 
     
     
