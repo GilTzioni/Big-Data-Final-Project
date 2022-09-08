@@ -5,23 +5,32 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
   <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+  <script defer src="script.js"></script>
 
   <link rel="stylesheet" href="../assets/stylesheets/styleDashboard.css"/>
 
-  <button><div class="textb1">טיסות ממתינות להמראה </div></bar><div class="numFlight" id="numFlight"></div></button>
+  <button data-modal-target="#modal" class="b2"><div class="textb1">טיסות ממתינות להמראה </div></bar><div class="numFlight" id="numFlight"></div></button>
   <div class="modal" id="modal">
     <div class="modal-header">
         <div class="title">טיסות הממריאות ברבע שעה בקרובה</div>
-        <button class="close-button">&times;</button>
+        <button data-close-button class="close-button">&times;</button>
     </div>
     <div class="modal-body">
-
+        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+         Esse quod alias ut illo doloremque eum ipsum obcaecati distinctio debitis 
+         reiciendis quae quia soluta totam doloribus quos nesciunt necessitatibus, 
+         consectetur quisquam accusamus ex, dolorum, dicta vel? Nostrum voluptatem totam,
+          molestiae rem at ad autem dolor ex aperiam. Amet assumenda eos architecto,
+           dolor placeat deserunt voluptatibus tenetur sint officiis perferendis atque!
+            Voluptatem maxime eius eum dolorem dolor exercitationem quis iusto totam!
+             Repudiandae nobis nesciunt sequi iure! Eligendi, eius libero.
+              Ex, repellat sapiente!
     </div>
   </div>
   <div id="overlay"></div>
+  
   <!-- <a class="b2" href="/flights" role="link"><div class="textb2">טיסות ממתינות להמראה </div></bar><div class="numFlight" id="numFlight"></div></a>    -->
   
   <a class="b1" href="/landings" role="link"><div class="textb1">טיסות ממתינות לנחיתה </div></bar><div class="numLanding" id="numLanding"></div></a>
@@ -205,7 +214,6 @@ tempElement.addEventListener("click", function(){
         function initSocket() {
             //socket is global
             socket = io.connect();
-            alert("connected");
             setMap();
             clockBlock();
             startTime();
@@ -239,7 +247,46 @@ tempElement.addEventListener("click", function(){
          {
             socket.emit('resetDB');
          }
- // Add a pin to the map
+       //  --------------------------------------------------------------
+ 
+       const openModalButtons = document.querySelectorAll('[data-modal-target]')
+        const closeModalButtons = document.querySelectorAll('[data-close-button]')
+        const overlay = document.getElementById('overlay')
+
+        openModalButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const modal = document.querySelector(button.dataset.modalTarget)
+            openModal(modal)
+        })
+        })
+
+        overlay.addEventListener('click', () => {
+        const modals = document.querySelectorAll('.modal.active')
+        modals.forEach(modal => {
+            closeModal(modal)
+        })
+        })
+
+        closeModalButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const modal = button.closest('.modal')
+            closeModal(modal)
+        })
+        })
+
+        function openModal(modal) {
+        if (modal == null) return
+        modal.classList.add('active')
+        overlay.classList.add('active')
+        }
+
+        function closeModal(modal) {
+        if (modal == null) return
+        modal.classList.remove('active')
+        overlay.classList.remove('active')
+}
+ //------------------------------------------------------------------
+       // Add a pin to the map
         function add()
          {
           

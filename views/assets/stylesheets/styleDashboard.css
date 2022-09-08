@@ -67,8 +67,11 @@ head{
 	font-family:Arial;
 	font-weight:bold;
 }
+*, *::after, *::before {
+	box-sizing: border-box;
+  }
 
-/* .b2{
+.b2{
 	border: 2px solid black; 
 	position: absolute;
 	left:450px;
@@ -95,7 +98,7 @@ head{
 .b2:hover {
 	background:linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
 	background-color:#408c99;
-} */
+}
 .modal{
 	position: fixed;
 	top: 50%;
@@ -136,6 +139,7 @@ head{
 }
 #overlay{
 	position: fixed;
+	opacity: 0;
 	transition: 200ms ease-in-out;
 	top: 0;
 	left: 0;
