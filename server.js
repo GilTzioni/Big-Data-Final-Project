@@ -36,42 +36,22 @@ io.on("connection", async (socket) => {
 
 //Consumer kafka
 kafka.consumer.on("data", async (msg) => {
-    const newFlights = JSON.parse(msg.value);
+    let newFlight = JSON.parse(msg.value);
 
     // **Store the data in Redis and after send to Dashboard */
-    if(String(msg.value).includes("flight")) // Details flights
+    if(String(msg.value).includes("weather")) // Weather details
     {   
-
-        io.emit("newFlights",
-        {numFlight: newFlights.numFlight, from: newFlights.from, to: newFlights.to,
-             length: newFlights.length, width: newFlights.width, degrees: newFlights.degrees});
-
-        redis.setFlights(newFlights.numFlight);
-        redis.setFrom(newFlights.from);
-        redis.setTo(newFlights.to);
-        redis.setLocation(newFlights.length,newFlights.width, newFlights.degrees);
+    }
+    else
+    {
+        redis.setTopic("flight",msg.value);
+        let allData = await redis.getAllData();//Get data from redis to dashboard    
+        io.emit("newFlight",
+        {data: JSON.parse(allData[0])}); //Send to front with socket
     }
 
-    if(String(msg.value).includes("landings")) // Details flights
-    {   
-
-        io.emit("New_Flights",
-        {numFlight: newFlights.numFlight, from: newFlights.from, to: newFlights.to});
-
-        redis.setNumFlight(newFlights.numFlight);
-        redis.setFrom(newFlights.from);
-        redis.setTo(newFlights.to);
-    }
-
-    //Get data from redis to dashboard
-    let allDataArray = await redis.getAllData();
     
-    //Send to front with socket
-    io.emit('allData',
-    {join: allDataArray[0],service: allDataArray[1], complaint: allDataArray[2] ,
-         leave: allDataArray[3], waiting: allDataArray[4]});
-});
-
+    
 app.use('/', controllerRouter);
 app.use('/', landingsRouter);
 app.use('/', flightsRouter);

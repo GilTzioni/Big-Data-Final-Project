@@ -207,7 +207,7 @@ tempElement.addEventListener("click", function(){
                 let loc = {width, length, degrees };
                 return loc;
             }
-            socket.on('newFlights', function (msg) {
+            socket.on('newFlight', function (msg) {
                 console.log(msg.direction);
                 let flight = flight(msg.width, msg.length, msg.degrees);
                 locations[counterFlights++] = flight;
