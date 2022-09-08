@@ -229,11 +229,11 @@ tempElement.addEventListener("click", function(){
                 locations[counterFlights++] = flight;
                 if (msg.direction==0){//Add a condition of if it is in the next 15 minutes
                     flights[numFlight++] = flight;
-                    flightsTable(msg.data.id, msg.data.src, msg.data.dest, msg.data.estimatedarrival);
+                    flightsTable(msg.data.id, msg.data.src, msg.data.dest, msg.data.estimatedDeparture);
                 }
                 else{
                     landings[numLanding++] = flight;
-                    
+                    landingsTable(msg.data.id, msg.data.src, msg.data.dest, msg.data.estimateDarrival);
                 }
                 document.getElementById('numFlight').innerHTML = numFlight;
                 document.getElementById('numLanding').innerHTML = numLanding;
@@ -298,17 +298,29 @@ var modal = document.getElementById("modal");
                     modal.style.display = "none";
                 }
             }
-            function flightsTable(x1, x2, x3, x4) {
+            function flightsTable(id, src, dest, estimatedDeparture) {
                 let table = document.getElementById("flightsTable");
                 let row = table.insertRow(-1);
                 let cell1 = row.insertCell(0);
                 let cell2 = row.insertCell(1);
                 let cell3 = row.insertCell(2);
                 let cell4 = row.insertCell(3);
-                cell1.innerHTML = x1;
-                cell2.innerHTML = x2;
-                cell3.innerHTML = x3;
-                cell4.innerHTML = x4;
+                cell1.innerHTML = id;
+                cell2.innerHTML = src;
+                cell3.innerHTML = dest;
+                cell4.innerHTML = estimatedDeparture;
+            }
+            function landingsTable(id, src, dest, estimateDarrival) {
+                let table = document.getElementById("landingsTable");
+                let row = table.insertRow(-1);
+                let cell1 = row.insertCell(0);
+                let cell2 = row.insertCell(1);
+                let cell3 = row.insertCell(2);
+                let cell4 = row.insertCell(3);
+                cell1.innerHTML = id;
+                cell2.innerHTML = src;
+                cell3.innerHTML = dest;
+                cell4.innerHTML = estimateDarrival;
             }
  //------------------------------------------------------------------
        // Add a pin to the map
