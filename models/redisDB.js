@@ -12,10 +12,19 @@ const redisDB = {
         });
         console.log('initDB');
     },
+    setWaiting: async function(key, value){
+        try
+        {
+            await db.set(key, value); // stores the data in the database
+        } 
+        catch (error)
+        {
+            console.log(error);
+        }
+    },
 
     setTopic: async function(topic, value) 
     {
-        // we can refactor this
         switch(topic) 
         {
             case 'flight':
