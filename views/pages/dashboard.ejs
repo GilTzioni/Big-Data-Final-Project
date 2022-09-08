@@ -12,21 +12,20 @@
   <link rel="stylesheet" href="../assets/stylesheets/styleDashboard.css"/>
 
   <button data-modal-target="#modal" class="b2"><div class="textb1">טיסות ממתינות להמראה </div></bar><div class="numFlight" id="numFlight"></div></button>
-  <div class="modal" id="modal">
+  <div id="modal" class="modal">
     <div class="modal-header">
         <div class="title">טיסות הממריאות ברבע שעה בקרובה</div>
         <button data-close-button class="close-button">&times;</button>
     </div>
     <div class="modal-body">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-         Esse quod alias ut illo doloremque eum ipsum obcaecati distinctio debitis 
-         reiciendis quae quia soluta totam doloribus quos nesciunt necessitatibus, 
-         consectetur quisquam accusamus ex, dolorum, dicta vel? Nostrum voluptatem totam,
-          molestiae rem at ad autem dolor ex aperiam. Amet assumenda eos architecto,
-           dolor placeat deserunt voluptatibus tenetur sint officiis perferendis atque!
-            Voluptatem maxime eius eum dolorem dolor exercitationem quis iusto totam!
-             Repudiandae nobis nesciunt sequi iure! Eligendi, eius libero.
-              Ex, repellat sapiente!
+        <table id="flightsTable">
+            <thead>
+                <th>מספר טיסה</th>
+                <th>מקור</th>
+                <th>יעד</th>
+                <th>חיזוי המראה</th>
+            </thead>
+        </table>
     </div>
   </div>
   <div id="overlay"></div>
@@ -61,8 +60,7 @@
   </div>
   
   <script type='text/javascript'>
-    // api key : 82005d27a116c2880c8f0fcb866998a0
-
+   
 // SELECT ELEMENTS
 const iconElement = document.querySelector(".weather-icon");
 const tempElement = document.querySelector(".temperature-value p");
@@ -212,7 +210,6 @@ tempElement.addEventListener("click", function(){
 
         
         function initSocket() {
-            //socket is global
             socket = io.connect();
             setMap();
             clockBlock();
@@ -285,6 +282,35 @@ tempElement.addEventListener("click", function(){
         modal.classList.remove('active')
         overlay.classList.remove('active')
 }
+var modal = document.getElementById("modal");
+            var btn = document.getElementById("b2");
+            var span = document.getElementsByClassName("close-button")[0];
+            btn.onclick = function () {
+                modal.style.display = "block";
+            }
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+                else if (event.target == modal1) {
+                    modal1.style.display = "none";
+                }
+            }
+            function flightsTable(x1, x2, x3, x4) {
+                let table = document.getElementById("flightsTable");
+                let row = table.insertRow(-1);
+                let cell1 = row.insertCell(0);
+                let cell2 = row.insertCell(1);
+                let cell3 = row.insertCell(2);
+                let cell4 = row.insertCell(3);
+                cell1.innerHTML = x1;
+                cell2.innerHTML = x2;
+                cell3.innerHTML = x3;
+                cell4.innerHTML = x4;
+            }
  //------------------------------------------------------------------
        // Add a pin to the map
         function add()
