@@ -20,10 +20,10 @@
     <div class="modal-body">
         <table id="flightsTable" dir="rtl">
             <thead>
-                <th>מספר טיסה</th>
-                <th>מקור</th>
-                <th>יעד</th>
-                <th>חיזוי המראה</th>
+                <th><strong>מספר טיסה</strong></th>
+                <th><strong>מקור</strong></th>
+                <th><strong>יעד</strong></th>
+                <th><strong>חיזוי המראה</strong></th>
             </thead>
         </table>
     </div>
@@ -240,7 +240,6 @@ tempElement.addEventListener("click", function(){
             });
             socket.on("weather", function (msg) {
                 console.log(JSON.stringify(msg));
-                document.getElementById("tempeture").innerHTML = msg.temp;
             });
         }
         function resetInfo()
@@ -312,18 +311,18 @@ var modal = document.getElementById("modal");
                 cell3.innerHTML = dest;
                 cell4.innerHTML = estimatedDeparture;
             }
-            function landingsTable(id, src, dest, estimateDarrival) {
-                let table = document.getElementById("landingsTable");
-                let row = table.insertRow(-1);
-                let cell1 = row.insertCell(0);
-                let cell2 = row.insertCell(1);
-                let cell3 = row.insertCell(2);
-                let cell4 = row.insertCell(3);
-                cell1.innerHTML = id;
-                cell2.innerHTML = src;
-                cell3.innerHTML = dest;
-                cell4.innerHTML = estimateDarrival;
-            }
+            // function landingsTable(id, src, dest, estimateDarrival) {
+            //     let table = document.getElementById("landingsTable");
+            //     let row = table.insertRow(-1);
+            //     let cell1 = row.insertCell(0);
+            //     let cell2 = row.insertCell(1);
+            //     let cell3 = row.insertCell(2);
+            //     let cell4 = row.insertCell(3);
+            //     cell1.innerHTML = id;
+            //     cell2.innerHTML = src;
+            //     cell3.innerHTML = dest;
+            //     cell4.innerHTML = estimateDarrival;
+            // }
  //--------------------------------------------------------------------------------------
        // Add a pin to the map
         function add()
