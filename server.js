@@ -39,6 +39,7 @@ kafka.consumer.on("data", async (msg) => {
     // **Store the data in Redis and after send to Dashboard */
     if(String(msg.value).includes("weather")) // Weather details
     {   
+        io.emit("weather",{temp:newFlight.temp, description:newFlight.description, icon:newFlight.icon});
     }
     else
     {
