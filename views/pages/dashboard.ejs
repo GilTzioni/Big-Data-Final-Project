@@ -68,7 +68,6 @@ const descElement = document.querySelector(".temperature-description p");
 const locationElement = document.querySelector(".location p");
 const notificationElement = document.querySelector(".notification");
 
-// App data
 const weather = {};
 
 weather.temperature = {
@@ -239,7 +238,9 @@ tempElement.addEventListener("click", function(){
                 document.getElementById('numLanding').innerHTML = numLanding;
                 //console.log(counter);
             });
-            socket.on('allData', function (msg) {
+            socket.on("weather", function (msg) {
+                console.log(JSON.stringify(msg));
+                document.getElementById("tempeture").innerHTML = msg.temp;
             });
         }
         function resetInfo()
@@ -336,7 +337,7 @@ var modal = document.getElementById("modal");
                 degrees = locations[i].degrees;
                 loc = new Microsoft.Maps.Location(locations[i].width,locations[i].length);
                 pin = new Microsoft.Maps.Pushpin(loc, {
-                    icon:'<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21.000000 21.000000" preserveAspectRatio="xMidYMid meet" style="transform: rotate(45deg);"> <g transform="translate(0.000000,21.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none"> <path d="M96 173 c-3 -3 -6 -15 -6 -25 0 -10 -11 -23 -24 -28 -37 -14 -42 -31 -8 -24 35 7 54 -23 27 -42 -15 -11 -15 -13 2 -16 10 -2 26 -2 36 0 16 4 16 5 1 17 -11 8 -15 19 -10 30 5 13 13 16 37 11 35 -7 31 10 -7 24 -14 6 -24 18 -24 29 0 21 -13 35 -24 24z"/> </g> </svg>',
+                    icon:'<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21.000000 21.000000" preserveAspectRatio="xMidYMid meet" style="transform: rotate(${locations[i].degrees}deg);"> <g transform="translate(0.000000,21.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none"> <path d="M96 173 c-3 -3 -6 -15 -6 -25 0 -10 -11 -23 -24 -28 -37 -14 -42 -31 -8 -24 35 7 54 -23 27 -42 -15 -11 -15 -13 2 -16 10 -2 26 -2 36 0 16 4 16 5 1 17 -11 8 -15 19 -10 30 5 13 13 16 37 11 35 -7 31 10 -7 24 -14 6 -24 18 -24 29 0 21 -13 35 -24 24z"/> </g> </svg>',
                     anchor: new Microsoft.Maps.Point(10, 10)
                 });
               
