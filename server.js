@@ -1,60 +1,45 @@
 const express = require('express');
 const app = express();
-const Port = process.env.PORT || 3000;
+const Port = 3000;
 var server = require('http').createServer(app);
 const io = require("socket.io")(server, {
-    allowEIO3: true // false by default
+  allowEIO3: true // false by default
 });
 
 const kafka = require('./models/kafkaConsumer');
 const redis = require("./models/redisDB");
-const controllerRouter = require('./routes/controller'); 
-const landingsRouter = require('./routes/landings');
-const flightsRouter = require('./routes/flights');
+const controllerRouter = require('./routes/controller');
 var bodyParser = require('body-parser')
 const { Console } = require('console');
+
 //Middleware
 app.set('view engine', 'ejs');
 app.use(express.json());
 
-
 //Socket.io
 io.on("connection", async (socket) => {
-    //Get data from redis to dashboard
-    let allData = await redis.getAllData();
-    
+  //Get data from redis to dashboard
+  let allData = await redis.getAllData();
 
-    //Reset Info Manualiy
-    socket.on('resetDB', function () {
-        // reset redis
-        redis.initDB(); 
-    });
+
+  //Reset Info Manualiy
+  socket.on('resetDB', function () {
+    // reset redis
+    redis.initDB();
+  });
 
 });
 
 //Consumer kafka
-kafka.consumer.on("data", async (msg) => {
-    let newFlight = JSON.parse(msg.value);
+kafka.flightConsumer.on("data", function (data) {
+  console.log(`flight data : ${data.value}`);
+}).on("error", (err) => {
+  console.error(err);
+})
 
-    // **Store the data in Redis and after send to Dashboard */
-    if(String(msg.value).includes("weather")) // Weather details
-    {   
-        io.emit("weather",{temp:newFlight.temp, description:newFlight.description, icon:newFlight.icon});
-    }
-    else
-    {
-        redis.setFlight("flight",msg.value);
-        let allData = await redis.getAllData();//Get data from redis to dashboard    
-        io.emit("newFlight",
-        {data: JSON.parse(allData[0])}); //Send to front with socket
-    }
-});
-    
 
-    
-    
+
+
 app.use('/', controllerRouter);
-app.use('/', landingsRouter);
-app.use('/', flightsRouter);
 
 server.listen(Port, () => console.log(`Server B is listening at http://localhost:${Port}`));

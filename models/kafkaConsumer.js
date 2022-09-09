@@ -1,62 +1,53 @@
-// https://www.cloudkarafka.com/ 
 const Kafka = require("node-rdkafka");
- 
+
 const kafkaConf = {
-    "group.id": "cloudkarafka-example",
-    "metadata.broker.list": "moped-01.srvs.cloudkafka.com:9094,moped-02.srvs.cloudkafka.com:9094,moped-03.srvs.cloudkafka.com:9094".split(","),
-    "socket.keepalive.enable": true,
-    "security.protocol": "SASL_SSL",
-    "sasl.mechanisms": "SCRAM-SHA-256",
-    "sasl.username": "jake66n3",
-    "sasl.password": "tXn-8ov38rFZtyGcHvsoOtkhP7HSkVpR",
-    "debug": "generic,broker,security"
-  };
+  "group.id": "big-data-project",
+  "metadata.broker.list": "localhost:9092"
+};
+
+const topics = {
+  flights: 'flights',
+  weather: 'weather'
+}
+
+const flightConsumer = new Kafka.KafkaConsumer(kafkaConf, {});
+
+const weatherConsumer = new Kafka.KafkaConsumer(kafkaConf, {});
+
+flightConsumer.connect();
+weatherConsumer.connect();
+
+flightConsumer.on("ready", function (arg) {
+  // setup consumer  
+  console.log(`Consumer ${arg.name} ready - for Redis & Dashboard`);
+  flightConsumer.subscribe([topics.flights]);
+  console.log("Subscribed.");
   
-  const prefix = "jake66n3-";
-  const topic = `${prefix}new`;
-  
-  const topics = [topic];
-  const consumer = new Kafka.KafkaConsumer(kafkaConf, {
-    "auto.offset.reset": "beginning"
-  }); 
+  //start consuming messages
+  flightConsumer.consume();
 
-  consumer.on("ready", function(arg) {
-    console.log(`Consumer ${arg.name} ready - for Redis & Dashboard`);
-    consumer.subscribe(topics);
-    console.log("Subscribed.");
-    //start consuming messages
-    consumer.consume();
-  });
+}).on("disconnected", (arg) => {
+  console.log('consumer disconnected. ' + JSON.stringify(arg));
+  process.exit();
+});
 
-  consumer.on("data", function(m) {
-    console.log("DATA IN DA HOUSe");
-  });
+weatherConsumer.on("ready", function (arg) {
+  // setup consumer  
+  console.log(`Consumer ${arg.name} ready - for Redis & Dashboard`);
+  weatherConsumer.subscribe([topics.weather]);
+  console.log("Subscribed.");
 
-  consumer.on("error", (err) => {
-    console.log("1");
-      console.error(err);
-  });
+  //start consuming messages
+  weatherConsumer.consume();
 
-    consumer.on("disconnected", (arg)=> {
-      console.log('consumer disconnected. ' + JSON.stringify(arg));
-    process.exit();
-  });
+}).on("data", function (data) {
+  console.log(`weather data : ${data}`);
+}).on("error", (err) => {
+  console.error(err);
+}).on("disconnected", (arg) => {
+  console.log('consumer disconnected. ' + JSON.stringify(arg));
+  process.exit();
+});
 
-  consumer.on('event.error', (err)=> {
-    console.error(err);
-    process.exit(1);
-  });
-
-  consumer.on('event.log', function(log) {
-      console.log(log);
-  });
-
-  
-// //starting the consumer
-// consumer.connect({}, function(err, d) {
-//   console.log(err);
-//   console.log(d)
-// });
-  consumer.connect();
-
-  module.exports.consumer = consumer;
+module.exports.flightConsumer = flightConsumer;
+module.exports.weatherConsumer = weatherConsumer;
