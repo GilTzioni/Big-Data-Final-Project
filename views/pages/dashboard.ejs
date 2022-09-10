@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -8,367 +9,367 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
   <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 
-  <link rel="stylesheet" href="../assets/stylesheets/styleDashboard.css"/>
+  <link rel="stylesheet" href="../assets/stylesheets/styleDashboard.css" />
 
-  <button data-modal-target="#modal" class="b2"><div class="textb1">טיסות ממתינות להמראה </div></bar><div class="numFlight" id="numFlight"></div></button>
+  <button data-modal-target="#modal" class="b2">
+    <div class="textb1">טיסות ממתינות להמראה </div>
+    </bar>
+    <div class="numFlight" id="numFlight"></div>
+  </button>
   <div id="modal" class="modal">
     <div class="modal-header">
-        <div class="title">טיסות הממריאות ברבע שעה בקרובה</div>
-        <button data-close-button class="close-button">&times;</button>
+      <div class="title">טיסות הממריאות ברבע שעה בקרובה</div>
+      <button data-close-button class="close-button">&times;</button>
     </div>
     <div class="modal-body">
-        <table id="flightsTable" dir="rtl">
-            <thead>
-                <th><strong>מספר טיסה</strong></th>
-                 <th><strong>יעד</strong></th>
-                <th><strong>זמן המראה</strong></th>
-            </thead>
-        </table>
+      <table id="flightsTable" dir="rtl">
+        <thead>
+          <th><strong>מספר טיסה</strong></th>
+          <th><strong>יעד</strong></th>
+          <th><strong>זמן המראה</strong></th>
+        </thead>
+      </table>
     </div>
   </div>
   <div id="overlay"></div>
-  
+
   <!-- <a class="b2" href="/flights" role="link"><div class="textb2">טיסות ממתינות להמראה </div></bar><div class="numFlight" id="numFlight"></div></a>    -->
-  
-  <a class="b1" href="/landings" role="link"><div class="textb1">טיסות ממתינות לנחיתה </div></bar><div class="numLanding" id="numLanding"></div></a>
-  
+
+  <a class="b1" href="/landings" role="link">
+    <div class="textb1">טיסות ממתינות לנחיתה </div>
+    </bar>
+    <div class="numLanding" id="numLanding"></div>
+  </a>
+
   <div id="b3">
     <link rel="stylesheet" href="../assets/font/Rimouski.css">
-     <link rel="stylesheet" href="../assets/stylesheets/styleWeather.css">
-     <div class="container">
-      
+    <link rel="stylesheet" href="../assets/stylesheets/styleWeather.css">
+    <div class="container">
+
       <div class="notification"> </div>
       <div class="weather-container">
-          <div class="weather-icon">
-              <img src="../assets/icons/unknown.png" alt=""> </div>
-          <div class="temperature-description">
-              <p> - </p>
+        <div class="weather-icon">
+          <img src="../assets/icons/unknown.png" alt="">
+        </div>
+        <div class="temperature-description">
+          <p> - </p>
           <div class="location">
-              <p>-</p>
+            <p>-</p>
           </div>
-        
-         
-          </div>
-          <div class="temperature-value">
-              <p>- °<span>C</span></p>
-          </div>
-         
-         
+
+
+        </div>
+        <div class="temperature-value">
+          <p>- °<span>C</span></p>
+        </div>
+
+
       </div>
-  </div>
-  
-  <script type='text/javascript'>
-   
-// SELECT ELEMENTS
-const iconElement = document.querySelector(".weather-icon");
-const tempElement = document.querySelector(".temperature-value p");
-const descElement = document.querySelector(".temperature-description p");
-const locationElement = document.querySelector(".location p");
-const notificationElement = document.querySelector(".notification");
+    </div>
 
-const weather = {};
+    <script type='text/javascript'>
 
-weather.temperature = {
-    unit : "celsius"
-}
+      // SELECT ELEMENTS
+      const iconElement = document.querySelector(".weather-icon");
+      const tempElement = document.querySelector(".temperature-value p");
+      const descElement = document.querySelector(".temperature-description p");
+      const locationElement = document.querySelector(".location p");
+      const notificationElement = document.querySelector(".notification");
 
-// APP CONSTS AND VARS
-const KELVIN = 273;
-// API KEY
-const key = "82005d27a116c2880c8f0fcb866998a0";
+      const weather = {};
 
-// CHECK IF BROWSER SUPPORTS GEOLOCATION
-if('geolocation' in navigator){
-    navigator.geolocation.getCurrentPosition(setPosition, showError);
-}else{
-    notificationElement.style.display = "block";
-    notificationElement.innerHTML = "<p>Browser doesn't Support Geolocation</p>";
-}
+      weather.temperature = {
+        unit: "celsius"
+      }
 
-// SET USER'S POSITION
-function setPosition(position){
-    let latitude = position.coords.latitude;
-    let longitude = position.coords.longitude;
-    
-    getWeather(latitude, longitude);
-}
+      // APP CONSTS AND VARS
+      const KELVIN = 273;
+      // API KEY
+      const key = "82005d27a116c2880c8f0fcb866998a0";
 
-// SHOW ERROR WHEN THERE IS AN ISSUE WITH GEOLOCATION SERVICE
-function showError(error){
-    notificationElement.style.display = "block";
-    notificationElement.innerHTML = `<p> ${error.message} </p>`;
-}
+      // CHECK IF BROWSER SUPPORTS GEOLOCATION
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(setPosition, showError);
+      } else {
+        notificationElement.style.display = "block";
+        notificationElement.innerHTML = "<p>Browser doesn't Support Geolocation</p>";
+      }
 
-// GET WEATHER FROM API PROVIDER
-function getWeather(latitude, longitude){
-    let api = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${key}`;
-    
-    fetch(api)
-        .then(function(response){
+      // SET USER'S POSITION
+      function setPosition(position) {
+        let latitude = position.coords.latitude;
+        let longitude = position.coords.longitude;
+
+        getWeather(latitude, longitude);
+      }
+
+      // SHOW ERROR WHEN THERE IS AN ISSUE WITH GEOLOCATION SERVICE
+      function showError(error) {
+        notificationElement.style.display = "block";
+        notificationElement.innerHTML = `<p> ${error.message} </p>`;
+      }
+
+      // GET WEATHER FROM API PROVIDER
+      function getWeather(latitude, longitude) {
+        let api = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${key}`;
+
+        fetch(api)
+          .then(function (response) {
             let data = response.json();
             return data;
-        })
-        .then(function(data){
+          })
+          .then(function (data) {
             weather.temperature.value = Math.floor(data.main.temp - KELVIN);
             weather.description = data.weather[0].description;
             weather.iconId = data.weather[0].icon;
             weather.city = data.name;
             weather.country = data.sys.country;
-        })
-        .then(function(){
+          })
+          .then(function () {
             displayWeather();
-        });
-}
+          });
+      }
 
-// DISPLAY WEATHER TO UI
-function displayWeather(){
-    iconElement.innerHTML = `<img src="icons/${weather.iconId}.png"/>`;
-    tempElement.innerHTML = `${weather.temperature.value}°<span>C</span>`;
-    descElement.innerHTML = weather.description;
-    locationElement.innerHTML = `${weather.city}, ${weather.country}`;
-}
-
-// C to F conversion
-function celsiusToFahrenheit(temperature){
-    return (temperature * 9/5) + 32;
-}
-
-// WHEN THE USER CLICKS ON THE TEMPERATURE ELEMENET
-tempElement.addEventListener("click", function(){
-    if(weather.temperature.value === undefined) return;
-    
-    if(weather.temperature.unit == "celsius"){
-        let fahrenheit = celsiusToFahrenheit(weather.temperature.value);
-        fahrenheit = Math.floor(fahrenheit);
-        
-        tempElement.innerHTML = `${fahrenheit}°<span>F</span>`;
-        weather.temperature.unit = "fahrenheit";
-    }else{
+      // DISPLAY WEATHER TO UI
+      function displayWeather() {
+        iconElement.innerHTML = `<img src="../assets/icons/${weather.iconId}.png"/>`;
         tempElement.innerHTML = `${weather.temperature.value}°<span>C</span>`;
-        weather.temperature.unit = "celsius"
-    }
-});
-  </script>
-</div>
- 
+        descElement.innerHTML = weather.description;
+        locationElement.innerHTML = `${weather.city}, ${weather.country}`;
+      }
+
+      // C to F conversion
+      function celsiusToFahrenheit(temperature) {
+        return (temperature * 9 / 5) + 32;
+      }
+
+      // WHEN THE USER CLICKS ON THE TEMPERATURE ELEMENET
+      tempElement.addEventListener("click", function () {
+        if (weather.temperature.value === undefined) return;
+
+        if (weather.temperature.unit == "celsius") {
+          let fahrenheit = celsiusToFahrenheit(weather.temperature.value);
+          fahrenheit = Math.floor(fahrenheit);
+
+          tempElement.innerHTML = `${fahrenheit}°<span>F</span>`;
+          weather.temperature.unit = "fahrenheit";
+        } else {
+          tempElement.innerHTML = `${weather.temperature.value}°<span>C</span>`;
+          weather.temperature.unit = "celsius"
+        }
+      });
+    </script>
+  </div>
 
 
 
 
-<script language="JavaScript">
-          
+
+  <script language="JavaScript">
+
     function clockBlock() {
 
-          var timeNow=new Date();
+      var timeNow = new Date();
 
-           var hrs=timeNow.getHours();
-           var min=timeNow.getMinutes();
-           var sec=timeNow.getSeconds();
-           var amPm="AM";
+      var hrs = timeNow.getHours();
+      var min = timeNow.getMinutes();
+      var sec = timeNow.getSeconds();
+      var amPm = "AM";
 
-           if (hrs==0) {
-                  hrs=12;
-           }
-           if (hrs>12) {
-                   amPm="PM";
-                   hrs=hrs-12;
-           }
-           if (hrs<10) {
-                   hrs="0"+hrs;
-           }
-           if (min<10) {
-                   min="0"+min;
-           }
-           if (sec<10) {
-                   sec="0"+sec;
-           }
+      if (hrs == 0) {
+        hrs = 12;
+      }
+      if (hrs > 12) {
+        amPm = "PM";
+        hrs = hrs - 12;
+      }
+      if (hrs < 10) {
+        hrs = "0" + hrs;
+      }
+      if (min < 10) {
+        min = "0" + min;
+      }
+      if (sec < 10) {
+        sec = "0" + sec;
+      }
 
-          var printClock=document.getElementById('clockDisplay');
-          printClock.textContent=hrs+":"+min+":"+sec+" "+amPm;
-          printClock.innerText=hrs+":"+min+":"+":"+sec+" "+amPm;
+      var printClock = document.getElementById('clockDisplay');
+      printClock.textContent = hrs + ":" + min + ":" + sec + " " + amPm;
+      printClock.innerText = hrs + ":" + min + ":" + ":" + sec + " " + amPm;
 
-           setTimeout('clockBlock()',1000);
+      setTimeout('clockBlock()', 1000);
 
     } 
-    </script>
+  </script>
 
-    <script type="text/javascript">
-        var flightsLocations = {};
-        counterFlights = 0;
-        let numFlight = 0;
-        let numLanding = 0;
-        var map = null;
+  <script type="text/javascript">
+    var flightsLocations = {};
+    counterFlights = 0;
+    let numFlight = 0;
+    let numLanding = 0;
+    var map = null;
 
-        function setMap() {
-        map = new Microsoft.Maps.Map(document.getElementById("myMap"), { credentials: "AlKPvaFLRlENPR8sZ4FW3dgnTZ1wI2vL09O0j4VW574mAWA16ph-fzxr0KLTNWL1" });
-        }
+    function setMap() {
+      map = new Microsoft.Maps.Map(document.getElementById("myMap"), { credentials: "AlKPvaFLRlENPR8sZ4FW3dgnTZ1wI2vL09O0j4VW574mAWA16ph-fzxr0KLTNWL1" });
+    }
 
-        
-        function initSocket() {
-            socket = io.connect();
-            setMap();
-            clockBlock();
 
-            count = 0;
-            flightsLocations = {};
-            numFlight = 0;
-            numLanding = 0;
-            
-            const location = (latitude, longitude, direction) => {
-                let loc = {latitude, longitude, direction };
-                return loc;
-            }
+    function initSocket() {
+      socket = io.connect();
+      setMap();
+      clockBlock();
 
-            socket.on('flight', function (msg) {
-                // console.log(msg);
-                let location = null;
-                msg.forEachelement (element => {
-                    if(element.data.status.localeCompare("active")==0){
-                        location = location(element.data.location.latitude, element.data.location.longitude, element.data.location.direction);
-                        flightsLocations[counterFlights++] = location;
-                    }
-                    else if(element.data.status.localeCompare("active")!=0){//check the times
-                        numFlight++;
-                        flightsTable(element.data.flight_iata, element.data.arr_iata, element.data.dep_time.estimated);
-                    }
-                    
-                 });
-                document.getElementById('numFlight').innerHTML = numFlight;
-            });
+      // count = 0;
+      // flightsLocations = {};
+      // numFlight = 0;
+      // numLanding = 0;
 
-            socket.on('landing', function (msg) {
-                let location = null;
-                msg.forEachelement (element => {
-                    if(element.data.status.localeCompare("active")==0){
-                        location = location(element.data.location.latitude, element.data.location.longitude, element.data.location.direction);
-                        flightsLocations[counterFlights++] = location;
-                    }
-                    if(element.data.status.localeCompare("active")==0){
-                        numLanding++
-                        // LandingsTable(element.data.flight_iata, element.data.src, element.data.dest, element.data.estimatedDeparture);
-                    }
-                    
-                 });
-                document.getElementById('numLanding').innerHTML = numLanding;
-            });
+      socket.on('flight', function (msg) {
+        console.log(msg);
+        msg.forEach(element => {
+          if (element.location !== null) {
+            flightsLocations[counterFlights++] = element.location;
+          }
+          else if (element.status === "scheduled") {
+            numFlight++;
+            flightsTable(element.flight_iata, element.arr_iata, element.dep_time.estimated);
+          }
+        });
+        document.getElementById('numFlight').innerHTML = numFlight;
+      });
 
-            socket.on("weather", function (msg) {
-                console.log(JSON.stringify(msg));
-            });
-        }
-        function resetInfo()
-         {
-            socket.emit('resetDB');
-         }
-         
- //landings/flights table  ----------------------------------------------------------------------
- 
-       const openModalButtons = document.querySelectorAll('[data-modal-target]')
-        const closeModalButtons = document.querySelectorAll('[data-close-button]')
-        const overlay = document.getElementById('overlay')
+      socket.on('landing', function (msg) {
+        let location = null;
+        msg.forEach(element => {
+          if (element.location !== null) {
+            flightsLocations[counterFlights++] = element.location;
+          }
+          else if (element.status === "active") {
+            numLanding++
+            // LandingsTable(element.flight_iata, element.src, element.dest, element.estimatedDeparture);
+          }
 
-        openModalButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const modal = document.querySelector(button.dataset.modalTarget)
-            openModal(modal)
-        })
-        })
+        });
+        document.getElementById('numLanding').innerHTML = numLanding;
+      });
 
-        overlay.addEventListener('click', () => {
-        const modals = document.querySelectorAll('.modal.active')
-        modals.forEach(modal => {
-            closeModal(modal)
-        })
-        })
+      socket.on("weather", function (msg) {
+        console.log(JSON.stringify(msg));
+      });
+    }
+    function resetInfo() {
+      socket.emit('resetDB');
+    }
 
-        closeModalButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const modal = button.closest('.modal')
-            closeModal(modal)
-        })
-        })
+    //landings/flights table  ----------------------------------------------------------------------
 
-        function openModal(modal) {
-        if (modal == null) return
-        modal.classList.add('active')
-        overlay.classList.add('active')
-        }
+    const openModalButtons = document.querySelectorAll('[data-modal-target]')
+    const closeModalButtons = document.querySelectorAll('[data-close-button]')
+    const overlay = document.getElementById('overlay')
 
-        function closeModal(modal) {
-        if (modal == null) return
-        modal.classList.remove('active')
-        overlay.classList.remove('active')
-}
-var modal = document.getElementById("modal");
-            var btn = document.getElementById("b2");
-            var span = document.getElementsByClassName("close-button")[0];
-            btn.onclick = function () {
-                modal.style.display = "block";
-            }
-            span.onclick = function () {
-                modal.style.display = "none";
-            }
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            }
-            function flightsTable(flight_iata, dep_iata, estimated) {
-                let table = document.getElementById("flightsTable");
-                let row = table.insertRow(-1);
-                let cell1 = row.insertCell(0);
-                let cell2 = row.insertCell(1);
-                let cell3 = row.insertCell(2);
-                cell1.innerHTML = flight_iata;
-                cell2.innerHTML = dep_iata;
-                cell3.innerHTML = estimated;
-            }
-            // function landingsTable(id, src, dest, estimateDarrival) {
-            //     let table = document.getElementById("landingsTable");
-            //     let row = table.insertRow(-1);
-            //     let cell1 = row.insertCell(0);
-            //     let cell2 = row.insertCell(1);
-            //     let cell3 = row.insertCell(2);
-            //     let cell4 = row.insertCell(3);
-            //     cell1.innerHTML = id;
-            //     cell2.innerHTML = src;
-            //     cell3.innerHTML = dest;
-            //     cell4.innerHTML = estimateDarrival;
-            // }
- //--------------------------------------------------------------------------------------
-       // Add a pin to the map
-        function add()
-         {
-          
-            var loc = null;
-            var pin = null;
-            var direction = 0;
-            map.setView({ center: loc, zoom: 4 });
-            for (let i = 0; i < flightsLocations; i++) {
-                direction = flightsLocations[i].direction;
-                loc = new Microsoft.Maps.Location(flightsLocations[i].latitude,flightsLocations[i].longitude);
-                pin = new Microsoft.Maps.Pushpin(loc, {
-                    icon:'<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21.000000 21.000000" preserveAspectRatio="xMidYMid meet" style="transform: rotate(45deg);"> <g transform="translate(0.000000,21.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none"> <path d="M96 173 c-3 -3 -6 -15 -6 -25 0 -10 -11 -23 -24 -28 -37 -14 -42 -31 -8 -24 35 7 54 -23 27 -42 -15 -11 -15 -13 2 -16 10 -2 26 -2 36 0 16 4 16 5 1 17 -11 8 -15 19 -10 30 5 13 13 16 37 11 35 -7 31 10 -7 24 -14 6 -24 18 -24 29 0 21 -13 35 -24 24z"/> </g> </svg>',
-                    anchor: new Microsoft.Maps.Point(10, 10)
-                });
-                map.entities.push(pin);
-            }            
-         }
+    openModalButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const modal = document.querySelector(button.dataset.modalTarget)
+        openModal(modal)
+      })
+    })
+
+    overlay.addEventListener('click', () => {
+      const modals = document.querySelectorAll('.modal.active')
+      modals.forEach(modal => {
+        closeModal(modal)
+      })
+    })
+
+    closeModalButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const modal = button.closest('.modal')
+        closeModal(modal)
+      })
+    })
+
+    function openModal(modal) {
+      if (modal == null) return
+      modal.classList.add('active')
+      overlay.classList.add('active')
+    }
+
+    function closeModal(modal) {
+      if (modal == null) return
+      modal.classList.remove('active')
+      overlay.classList.remove('active')
+    }
+    var modal = document.getElementById("modal");
+    var btn = document.getElementById("b2");
+    var span = document.getElementsByClassName("close-button")[0];
+    btn.onclick = function () {
+      modal.style.display = "block";
+    }
+    span.onclick = function () {
+      modal.style.display = "none";
+    }
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+    function flightsTable(flight_iata, dep_iata, estimated) {
+      let table = document.getElementById("flightsTable");
+      let row = table.insertRow(-1);
+      let cell1 = row.insertCell(0);
+      let cell2 = row.insertCell(1);
+      let cell3 = row.insertCell(2);
+      cell1.innerHTML = flight_iata;
+      cell2.innerHTML = dep_iata;
+      cell3.innerHTML = estimated;
+    }
+    // function landingsTable(id, src, dest, estimateDarrival) {
+    //     let table = document.getElementById("landingsTable");
+    //     let row = table.insertRow(-1);
+    //     let cell1 = row.insertCell(0);
+    //     let cell2 = row.insertCell(1);
+    //     let cell3 = row.insertCell(2);
+    //     let cell4 = row.insertCell(3);
+    //     cell1.innerHTML = id;
+    //     cell2.innerHTML = src;
+    //     cell3.innerHTML = dest;
+    //     cell4.innerHTML = estimateDarrival;
+    // }
+    //--------------------------------------------------------------------------------------
+    // Add a pin to the map
+    function add() {
+
+      var loc = null;
+      var pin = null;
+      var direction = 0;
+      map.setView({ center: loc, zoom: 4 });
+      for (let i = 0; i < flightsLocations; i++) {
+        direction = flightsLocations[i].direction;
+        loc = new Microsoft.Maps.Location(flightsLocations[i].latitude, flightsLocations[i].longitude);
+        pin = new Microsoft.Maps.Pushpin(loc, {
+          icon: '<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21.000000 21.000000" preserveAspectRatio="xMidYMid meet" style="transform: rotate(45deg);"> <g transform="translate(0.000000,21.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none"> <path d="M96 173 c-3 -3 -6 -15 -6 -25 0 -10 -11 -23 -24 -28 -37 -14 -42 -31 -8 -24 35 7 54 -23 27 -42 -15 -11 -15 -13 2 -16 10 -2 26 -2 36 0 16 4 16 5 1 17 -11 8 -15 19 -10 30 5 13 13 16 37 11 35 -7 31 10 -7 24 -14 6 -24 18 -24 29 0 21 -13 35 -24 24z"/> </g> </svg>',
+          anchor: new Microsoft.Maps.Point(10, 10)
+        });
+        map.entities.push(pin);
+      }
+    }
     function move() {
-        for (var i = map.entities.getLength() - 1; i >= 0; i--) {
-            var pushpin = map.entities.get(i);
-            if (pushpin instanceof Microsoft.Maps.Pushpin) {
-                map.entities.removeAt(i);
-            }
+      for (var i = map.entities.getLength() - 1; i >= 0; i--) {
+        var pushpin = map.entities.get(i);
+        if (pushpin instanceof Microsoft.Maps.Pushpin) {
+          map.entities.removeAt(i);
         }
+      }
     }       
-    </script>
+  </script>
 </head>
 
-<body onload = "initSocket()">
-    <input id="badd" type="button" onclick="add()" value="הוסף אייקונים" />
-    <input id="bremove" type="button" onclick="move()" value="הסר אייקונים" />
-    <div id="myMap"></div>
-    <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AlKPvaFLRlENPR8sZ4FW3dgnTZ1wI2vL09O0j4VW574mAWA16ph-fzxr0KLTNWL1' async defer></script> 
-    <div id="clockDisplay" class="clockDesign" dir="ltr"><br/></div>
+<body onload="initSocket()">
+  <input id="badd" type="button" onclick="add()" value="הוסף אייקונים" />
+  <input id="bremove" type="button" onclick="move()" value="הסר אייקונים" />
+  <div id="myMap"></div>
+  <script type='text/javascript'
+    src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AlKPvaFLRlENPR8sZ4FW3dgnTZ1wI2vL09O0j4VW574mAWA16ph-fzxr0KLTNWL1'
+    async defer></script>
+  <div id="clockDisplay" class="clockDesign" dir="ltr"><br /></div>
 </body>
