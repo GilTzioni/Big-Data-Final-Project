@@ -25,9 +25,8 @@ app.get('/', (req, res) => {
 app.get('/flights', (req, res) => {
   getFlights()
     .then(response => {
-      console.log("GetFlights then statement");
       res.json(response);
-      queueFlight(response);
+      // queueFlight(response);
       try {
         db.logger(req, response, 'flights');
       } catch (error) {
