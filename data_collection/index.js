@@ -8,7 +8,7 @@ const getWeather = require('./data-fetcher/weather-fetcher');
 const db = require('./db-logger/sql-logger');
 const logger = require('./middleware/console-logger');
 
-const queueFlight = require('./message-producers/flight-producer'); 
+const queueFlight = require('./message-producers/flight-producer');
 
 const cors = require('cors');
 
@@ -56,3 +56,19 @@ app.get('/weather', (req, res) => {
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 })
+
+setInterval(() => {
+  getFlights()
+    .then(response => {
+      res.json(response);
+      queueFlight(response);
+      try {
+        db.logger(req, response, 'flights');
+      } catch (error) {
+        console.error(error)
+      }
+    })
+    .catch(error => {
+      console.error(error);
+    })
+}, 60000)
