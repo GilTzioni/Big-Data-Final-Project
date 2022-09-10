@@ -1,6 +1,5 @@
-const Redis = require('redis');
 const db = require('./connectRedis');
-const keys = ["flight"];
+const keys = ["flight", "landing"];
 
 const redisDB = {
 
@@ -24,12 +23,30 @@ const redisDB = {
         }
     },
     
-    getAllData: async function() 
+    setLanding: async function(key, value){
+        try
+        {
+            await db.set(key, value); // stores the data in the database
+        } 
+        catch (error)
+        {
+            console.log(error);
+        }
+    },
+
+    getAllFlights: async function() 
     {
-        let allData = [];
-        allData.push(await db.get('flight'));
+        let flights = [];
+        flights.push(await db.get('flight'));
         console.log("Get all data from Redis!");
-        return allData;
+        return flights;
+    },
+    getAllLandings: async function() 
+    {
+        let landings = [];
+        landings.push(await db.get('landing'));
+        console.log("Get all data from Redis!");
+        return landings;
     },
     
 }

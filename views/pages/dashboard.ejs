@@ -7,7 +7,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
   <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-  <script defer src="script.js"></script>
 
   <link rel="stylesheet" href="../assets/stylesheets/styleDashboard.css"/>
 
@@ -21,9 +20,8 @@
         <table id="flightsTable" dir="rtl">
             <thead>
                 <th><strong>מספר טיסה</strong></th>
-                <th><strong>מקור</strong></th>
-                <th><strong>יעד</strong></th>
-                <th><strong>חיזוי המראה</strong></th>
+                 <th><strong>יעד</strong></th>
+                <th><strong>זמן המראה</strong></th>
             </thead>
         </table>
     </div>
@@ -195,9 +193,7 @@ tempElement.addEventListener("click", function(){
     </script>
 
     <script type="text/javascript">
-        var flights = {};
-        var landings = {};
-        var locations = {};
+        var flightsLocations = {};
         counterFlights = 0;
         let numFlight = 0;
         let numLanding = 0;
@@ -212,32 +208,50 @@ tempElement.addEventListener("click", function(){
             socket = io.connect();
             setMap();
             clockBlock();
-            startTime();
-            flights = {};
-            landings = {};
+
+            count = 0;
+            flightsLocations = {};
             numFlight = 0;
             numLanding = 0;
-            const flight = (width, length, degrees) => {
-               
-                let loc = {width, length, degrees };
+            
+            const location = (latitude, longitude, direction) => {
+                let loc = {latitude, longitude, direction };
                 return loc;
             }
-            socket.on('newFlight', function (msg) {
-                console.log(msg.direction);
-                let flight = flight(msg.width, msg.length, msg.degrees);
-                locations[counterFlights++] = flight;
-                if (msg.direction==0){//Add a condition of if it is in the next 15 minutes
-                    flights[numFlight++] = flight;
-                    flightsTable(msg.data.id, msg.data.src, msg.data.dest, msg.data.estimatedDeparture);
-                }
-                else{
-                    landings[numLanding++] = flight;
-                    landingsTable(msg.data.id, msg.data.src, msg.data.dest, msg.data.estimateDarrival);
-                }
+
+            socket.on('flight', function (msg) {
+                // console.log(msg);
+                let location = null;
+                msg.forEachelement (element => {
+                    if(element.data.status.localeCompare("active")==0){
+                        location = location(element.data.location.latitude, element.data.location.longitude, element.data.location.direction);
+                        flightsLocations[counterFlights++] = location;
+                    }
+                    else if(element.data.status.localeCompare("active")!=0){//check the times
+                        numFlight++;
+                        flightsTable(element.data.flight_iata, element.data.arr_iata, element.data.dep_time.estimated);
+                    }
+                    
+                 });
                 document.getElementById('numFlight').innerHTML = numFlight;
-                document.getElementById('numLanding').innerHTML = numLanding;
-                //console.log(counter);
             });
+
+            socket.on('landing', function (msg) {
+                let location = null;
+                msg.forEachelement (element => {
+                    if(element.data.status.localeCompare("active")==0){
+                        location = location(element.data.location.latitude, element.data.location.longitude, element.data.location.direction);
+                        flightsLocations[counterFlights++] = location;
+                    }
+                    if(element.data.status.localeCompare("active")==0){
+                        numLanding++
+                        // LandingsTable(element.data.flight_iata, element.data.src, element.data.dest, element.data.estimatedDeparture);
+                    }
+                    
+                 });
+                document.getElementById('numLanding').innerHTML = numLanding;
+            });
+
             socket.on("weather", function (msg) {
                 console.log(JSON.stringify(msg));
             });
@@ -299,30 +313,28 @@ var modal = document.getElementById("modal");
                     modal.style.display = "none";
                 }
             }
-            function flightsTable(id, src, dest, estimatedDeparture) {
+            function flightsTable(flight_iata, dep_iata, estimated) {
                 let table = document.getElementById("flightsTable");
                 let row = table.insertRow(-1);
                 let cell1 = row.insertCell(0);
                 let cell2 = row.insertCell(1);
                 let cell3 = row.insertCell(2);
-                let cell4 = row.insertCell(3);
-                cell1.innerHTML = id;
-                cell2.innerHTML = src;
-                cell3.innerHTML = dest;
-                cell4.innerHTML = estimatedDeparture;
+                cell1.innerHTML = flight_iata;
+                cell2.innerHTML = dep_iata;
+                cell3.innerHTML = estimated;
             }
-            function landingsTable(id, src, dest, estimateDarrival) {
-                let table = document.getElementById("landingsTable");
-                let row = table.insertRow(-1);
-                let cell1 = row.insertCell(0);
-                let cell2 = row.insertCell(1);
-                let cell3 = row.insertCell(2);
-                let cell4 = row.insertCell(3);
-                cell1.innerHTML = id;
-                cell2.innerHTML = src;
-                cell3.innerHTML = dest;
-                cell4.innerHTML = estimateDarrival;
-            }
+            // function landingsTable(id, src, dest, estimateDarrival) {
+            //     let table = document.getElementById("landingsTable");
+            //     let row = table.insertRow(-1);
+            //     let cell1 = row.insertCell(0);
+            //     let cell2 = row.insertCell(1);
+            //     let cell3 = row.insertCell(2);
+            //     let cell4 = row.insertCell(3);
+            //     cell1.innerHTML = id;
+            //     cell2.innerHTML = src;
+            //     cell3.innerHTML = dest;
+            //     cell4.innerHTML = estimateDarrival;
+            // }
  //--------------------------------------------------------------------------------------
        // Add a pin to the map
         function add()
@@ -330,16 +342,15 @@ var modal = document.getElementById("modal");
           
             var loc = null;
             var pin = null;
-            var degrees = 0;
+            var direction = 0;
             map.setView({ center: loc, zoom: 4 });
-            for (let i = 0; i < locations; i++) {
-                degrees = locations[i].degrees;
-                loc = new Microsoft.Maps.Location(locations[i].width,locations[i].length);
+            for (let i = 0; i < flightsLocations; i++) {
+                direction = flightsLocations[i].direction;
+                loc = new Microsoft.Maps.Location(flightsLocations[i].latitude,flightsLocations[i].longitude);
                 pin = new Microsoft.Maps.Pushpin(loc, {
-                    icon:'<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21.000000 21.000000" preserveAspectRatio="xMidYMid meet" style="transform: rotate(${locations[i].degrees}deg);"> <g transform="translate(0.000000,21.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none"> <path d="M96 173 c-3 -3 -6 -15 -6 -25 0 -10 -11 -23 -24 -28 -37 -14 -42 -31 -8 -24 35 7 54 -23 27 -42 -15 -11 -15 -13 2 -16 10 -2 26 -2 36 0 16 4 16 5 1 17 -11 8 -15 19 -10 30 5 13 13 16 37 11 35 -7 31 10 -7 24 -14 6 -24 18 -24 29 0 21 -13 35 -24 24z"/> </g> </svg>',
+                    icon:'<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21.000000 21.000000" preserveAspectRatio="xMidYMid meet" style="transform: rotate(45deg);"> <g transform="translate(0.000000,21.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none"> <path d="M96 173 c-3 -3 -6 -15 -6 -25 0 -10 -11 -23 -24 -28 -37 -14 -42 -31 -8 -24 35 7 54 -23 27 -42 -15 -11 -15 -13 2 -16 10 -2 26 -2 36 0 16 4 16 5 1 17 -11 8 -15 19 -10 30 5 13 13 16 37 11 35 -7 31 10 -7 24 -14 6 -24 18 -24 29 0 21 -13 35 -24 24z"/> </g> </svg>',
                     anchor: new Microsoft.Maps.Point(10, 10)
                 });
-              
                 map.entities.push(pin);
             }            
          }
@@ -361,6 +372,3 @@ var modal = document.getElementById("modal");
     <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AlKPvaFLRlENPR8sZ4FW3dgnTZ1wI2vL09O0j4VW574mAWA16ph-fzxr0KLTNWL1' async defer></script> 
     <div id="clockDisplay" class="clockDesign" dir="ltr"><br/></div>
 </body>
-
-
-
