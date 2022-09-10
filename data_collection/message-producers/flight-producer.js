@@ -14,8 +14,8 @@ stream.on('error', (err) => {
 
 const queueFlight = (data) => {
     console.log("Queue Flight");
-    stream.producer.flush();
-    const success = stream.write(Buffer.from(JSON.stringify(data)));
+    console.log(data);
+    const success = stream.write(JSON.stringify(data));
     if (success) {
         console.log(`message queued (${JSON.stringify(data)})`);
     } else {

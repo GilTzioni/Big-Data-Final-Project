@@ -32,7 +32,7 @@ io.on("connection", async (socket) => {
 
 //Consumer kafka
 kafka.flightConsumer.on("data", function (data) {
-  console.log(`flight data : ${data.value}`);
+  console.log(`flight data : ${JSON.parse(data.value)}`);
 }).on("error", (err) => {
   console.error(err);
 })
