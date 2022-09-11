@@ -60,7 +60,6 @@ app.listen(port, () => {
 setInterval(() => {
   getFlights()
     .then(response => {
-      res.json(response);
       queueFlight(response);
       try {
         db.logger(req, response, 'flights');
