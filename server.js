@@ -17,7 +17,7 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 
 
-/********fack data**********/
+/********fake data**********/
 const fakeData = Array.from([
   {
     flight_iata: "5X264",

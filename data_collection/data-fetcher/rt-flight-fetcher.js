@@ -23,11 +23,13 @@ const getFlights = async () => {
             scheduled: flight.departure.scheduled,
             estimated: flight.departure.estimated,
             actual: flight.departure.actual,
+            timezone: flight.departure.timezone
           },
           arr_time: {
             scheduled: flight.arrival.scheduled,
             estimated: flight.arrival.estimated,
             actual: flight.arrival.actual,
+            timezone: flight.arrival.timezone
           }
         }
       })
@@ -44,11 +46,13 @@ const getFlights = async () => {
             scheduled: flight.departure.scheduled,
             estimated: flight.departure.estimated,
             actual: flight.departure.actual,
+            timezone: flight.departure.timezone
           },
           arr_time: {
             scheduled: flight.arrival.scheduled,
             estimated: flight.arrival.estimated,
             actual: flight.arrival.actual,
+            timezone: flight.arrival.timezone
           }
         }
       })
