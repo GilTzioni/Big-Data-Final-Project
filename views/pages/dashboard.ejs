@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="../assets/stylesheets/styleDashboard.css" />
 
   <button data-modal-target="#modal" class="b2">
-    <div class="textb1">טיסות ממתינות להמראה </div>
+    <div class="textb2">טיסות ממתינות להמראה </div>
     </bar>
     <div class="numFlight" id="numFlight"></div>
   </button>
@@ -33,13 +33,28 @@
   </div>
   <div id="overlay"></div>
 
-  <!-- <a class="b2" href="/flights" role="link"><div class="textb2">טיסות ממתינות להמראה </div></bar><div class="numFlight" id="numFlight"></div></a>    -->
-
-  <a class="b1" href="/landings" role="link">
+  <button data-modal-target="#modal" class="b1">
     <div class="textb1">טיסות ממתינות לנחיתה </div>
     </bar>
     <div class="numLanding" id="numLanding"></div>
-  </a>
+  </button>
+  <div id="modal" class="modal">
+    <div class="modal-header">
+      <div class="title2">טיסות הנוחתות ברבע שעה בקרובה</div>
+      <button data-close-button class="close-button">&times;</button>
+    </div>
+    <div class="modal-body">
+      <table id="LandingsTable" dir="rtl">
+        <thead>
+          <th><strong>מספר טיסה</strong></th>
+          <th><strong>מקור</strong></th>
+          <th><strong>זמן נחיתה</strong></th>
+        </thead>
+      </table>
+    </div>
+  </div>
+  <div id="overlay2"></div>
+
 
   <div id="b3">
     <link rel="stylesheet" href="../assets/font/Rimouski.css">
@@ -181,7 +196,7 @@
       }
       if (hrs > 12) {
         amPm = "PM";
-        hrs = hrs - 12;
+        hrs = hrs;
       }
       if (hrs < 10) {
         hrs = "0" + hrs;
@@ -195,14 +210,12 @@
 
       var printClock = document.getElementById('clockDisplay');
       printClock.textContent = hrs + ":" + min + ":" + sec + " " + amPm;
-      printClock.innerText = hrs + ":" + min + ":" + ":" + sec + " " + amPm;
+      printClock.innerText = hrs + ":" + min + ":"  + sec + " " + amPm;
 
       setTimeout('clockBlock()', 1000);
 
     } 
-  </script>
-
-  <script type="text/javascript">
+ 
     var flightsLocations = {};
     counterFlights = 0;
     let numFlight = 0;
@@ -212,7 +225,22 @@
     function setMap() {
       map = new Microsoft.Maps.Map(document.getElementById("myMap"), { credentials: "AlKPvaFLRlENPR8sZ4FW3dgnTZ1wI2vL09O0j4VW574mAWA16ph-fzxr0KLTNWL1" });
     }
+    function arrivingSoon(hrsNow, hrs, minNow, min){
+      if((parseInt(hrs)-parseInt(hrsNow)) === 0){
+        if((parseInt(min)-parseInt(minNow)) < 16){
+          return true;
+        }
+      }
+      else if((parseInt(hrs)-parseInt(hrsNow)) === 1){
+        if(parseInt(minNow) - parseInt(min) > 44){
+           return true;
+      }
 
+      }
+      
+      
+      return false;
+    }
 
     function initSocket() {
       socket = io.connect();
@@ -223,45 +251,72 @@
       // flightsLocations = {};
       // numFlight = 0;
       // numLanding = 0;
+      let timeNow = new Date();
 
+      let hrs = timeNow.getHours();
+      let min = timeNow.getMinutes();
       socket.on('flight', function (msg) {
-        console.log(msg);
+        let timeNow = new Date();
+
+       let hrs = timeNow.getHours();
+        let min = timeNow.getMinutes();
         msg.forEach(element => {
           if (element.location !== null) {
             flightsLocations[counterFlights++] = element.location;
           }
           else if (element.status === "scheduled") {
-            numFlight++;
-            flightsTable(element.flight_iata, element.arr_iata, element.dep_time.estimated);
+            let timeArray = element.dep_time.estimated.split(":");
+            let time = timeArray[1] + ":" + timeArray[2].substring(0,2);
+            console.log(time.substring(0,2));
+            console.log(`${hrs}`);
+            if(time.substring(0,2) === hrs){
+              consol.log(`${hrs}`);
+              //&&  arrivingSoon(min, time.substring(3,5))
+              numFlight++;
+              flightsTable(element.flight_iata, element.arr_iata, time);
+            }
+           
           }
         });
         document.getElementById('numFlight').innerHTML = numFlight;
       });
 
       socket.on('landing', function (msg) {
-        let location = null;
         msg.forEach(element => {
           if (element.location !== null) {
             flightsLocations[counterFlights++] = element.location;
           }
           else if (element.status === "active") {
-            numLanding++
-            // LandingsTable(element.flight_iata, element.src, element.dest, element.estimatedDeparture);
+            let timeArray = element.arr_time.estimated.split(":");
+            console.log(timeArray[0]);
+            let time = timeArray[1] + ":" + timeArray[2].substring(0,2);
+            if(arrivingSoon(hrs, time.substring(0,2),  min, time.substring(3,5))){
+              consol.log("");
+              //&&  arrivingSoon(min, time.substring(3,5))
+              numLanding++;
+              landingsTable(element.flight_iata, element.dep_iata, time);
+            }
+           
           }
-
         });
         document.getElementById('numLanding').innerHTML = numLanding;
       });
 
-      socket.on("weather", function (msg) {
-        console.log(JSON.stringify(msg));
-      });
+      // socket.on("weather", function (msg) {
+      //           console.log(JSON.stringify(msg));
+      //           document.getElementById("tempeture").innerHTML = msg.temp;
+      //           //document.getElementById("icon").innerHTML = msg.icon;
+      //           var icon = msg.icon;
+      //           document.getElementById("iconIMG").src = "./icons/"+msg.icon+".png";
+      //           document.getElementById("description").innerHTML = JSON.parse(msg.description);
+                
+      //       });
     }
     function resetInfo() {
       socket.emit('resetDB');
     }
 
-    //landings/flights table  ----------------------------------------------------------------------
+    //flights table  ----------------------------------------------------------------------
 
     const openModalButtons = document.querySelectorAll('[data-modal-target]')
     const closeModalButtons = document.querySelectorAll('[data-close-button]')
@@ -323,19 +378,72 @@
       cell2.innerHTML = dep_iata;
       cell3.innerHTML = estimated;
     }
-    // function landingsTable(id, src, dest, estimateDarrival) {
-    //     let table = document.getElementById("landingsTable");
-    //     let row = table.insertRow(-1);
-    //     let cell1 = row.insertCell(0);
-    //     let cell2 = row.insertCell(1);
-    //     let cell3 = row.insertCell(2);
-    //     let cell4 = row.insertCell(3);
-    //     cell1.innerHTML = id;
-    //     cell2.innerHTML = src;
-    //     cell3.innerHTML = dest;
-    //     cell4.innerHTML = estimateDarrival;
+    // landingsTable--------------------------------------------------------------------------------------
+    // const openModalButtons2 = document.querySelectorAll('[data-modal-target]')
+    // const closeModalButtons2 = document.querySelectorAll('[data-close-button]')
+    // const overlay2 = document.getElementById('overlay2')
+
+    // openModalButtons2.forEach(button => {
+    //   button.addEventListener('click', () => {
+    //     const modal = document.querySelector(button.dataset.modalTarget)
+    //     openModal(modal)
+    //   })
+    // })
+
+    // overlay2.addEventListener('click', () => {
+    //   const modals = document.querySelectorAll('.modal2.active')
+    //   modals.forEach(modal => {
+    //     closeModal(modal)
+    //   })
+    // })
+
+    // closeModalButtons2.forEach(button => {
+    //   button.addEventListener('click', () => {
+    //     const modal = button.closest('.modal2')
+    //     closeModal(modal)
+    //   })
+    // })
+
+    // function openModal(modal) {
+    //   const overlay2 = document.getElementById('overlay2')
+    //   if (modal == null) return
+    //   modal.classList.add('active')
+    //   overlay2.classList.add('active')
     // }
-    //--------------------------------------------------------------------------------------
+
+    // function closeModal(modal) {
+    //   const overlay2 = document.getElementById('overlay2')
+    //   if (modal == null) return
+    //   modal.classList.remove('active')
+    //   overlay2.classList.remove('active')
+    // }
+    
+    var modal = document.getElementById("modal");
+    var btn = document.getElementById("b1");
+    var span = document.getElementsByClassName("close-button")[0];
+    btn.onclick = function () {
+      modal.style.display = "block";
+    }
+    span.onclick = function () {
+      modal.style.display = "none";
+    }
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+    function landingsTable(flight_iata, dep_iata, estimated) {
+      let table = document.getElementById("LandingsTable");
+      let row = table.insertRow(-1);
+      let cell1 = row.insertCell(0);
+      let cell2 = row.insertCell(1);
+      let cell3 = row.insertCell(2);
+      cell1.innerHTML = flight_iata;
+      cell2.innerHTML = dep_iata;
+      cell3.innerHTML = estimated;
+    }
+   
+    //-----------------------------------------------------------------------------------
     // Add a pin to the map
     function add() {
 
@@ -343,11 +451,11 @@
       var pin = null;
       var direction = 0;
       map.setView({ center: loc, zoom: 4 });
-      for (let i = 0; i < flightsLocations; i++) {
+      for (let i = 0; i < counterFlights; i++) {
         direction = flightsLocations[i].direction;
         loc = new Microsoft.Maps.Location(flightsLocations[i].latitude, flightsLocations[i].longitude);
         pin = new Microsoft.Maps.Pushpin(loc, {
-          icon: '<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21.000000 21.000000" preserveAspectRatio="xMidYMid meet" style="transform: rotate(45deg);"> <g transform="translate(0.000000,21.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none"> <path d="M96 173 c-3 -3 -6 -15 -6 -25 0 -10 -11 -23 -24 -28 -37 -14 -42 -31 -8 -24 35 7 54 -23 27 -42 -15 -11 -15 -13 2 -16 10 -2 26 -2 36 0 16 4 16 5 1 17 -11 8 -15 19 -10 30 5 13 13 16 37 11 35 -7 31 10 -7 24 -14 6 -24 18 -24 29 0 21 -13 35 -24 24z"/> </g> </svg>',
+          icon: `<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21.000000 21.000000" preserveAspectRatio="xMidYMid meet" style="transform: rotate(${flightsLocations[i].direction}deg);"> <g transform="translate(0.000000,21.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none"> <path d="M96 173 c-3 -3 -6 -15 -6 -25 0 -10 -11 -23 -24 -28 -37 -14 -42 -31 -8 -24 35 7 54 -23 27 -42 -15 -11 -15 -13 2 -16 10 -2 26 -2 36 0 16 4 16 5 1 17 -11 8 -15 19 -10 30 5 13 13 16 37 11 35 -7 31 10 -7 24 -14 6 -24 18 -24 29 0 21 -13 35 -24 24z"/> </g> </svg>`,
           anchor: new Microsoft.Maps.Point(10, 10)
         });
         map.entities.push(pin);
