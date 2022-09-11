@@ -161,7 +161,7 @@ head{
 
 
 
-/* .modal2{
+ .modal2{
 	position: fixed;
 	top: 50%;
 	left: 50%;
@@ -179,6 +179,7 @@ head{
 .modal2.active{
 	transform: translate(-50%, -50%) scale(1);
 }
+/*
 .modal-header2{
 	padding: 10px 15px;
 	display: flex;

@@ -208,8 +208,8 @@ kafka.flightConsumer.on("data", async (msg) => {
 //   // let flightsArray = await redis.getAllFlights();
 //   // let landingArray = await redis.getAllLandings();
 
-  io.emit("flight", flights.data.departures);
-  io.emit("landing", flights.data.arrivals);
+  io.emit("flight", fakeData);
+  io.emit("landing", fakeData);
     //  io.emit("weather", );
 
 }).on("error", (err) => {
