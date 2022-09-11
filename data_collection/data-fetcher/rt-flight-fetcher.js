@@ -1,7 +1,7 @@
 const axios = require("axios").default;
 
 const baseUrl = "http://api.aviationstack.com/v1/flights?";    // This API does not support HTTPS requests in the free version
-const apiKey = "access_key=72d3760e1da500ccf5912faf4ba0f82b";  // Can be reset if needed
+const apiKey = "access_key=0d0bda1fdac780fba7fa8cca3fc92c37";  // Can be reset if needed
 const arrivalFilter = "arr_iata=TLV"
 const departureFilter = "dep_iata=TLV"
 

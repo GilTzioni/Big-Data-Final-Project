@@ -273,13 +273,13 @@
 
           if (element.location !== null) {
             flightsLocations[counterFlights++] = element.location;
+            console.log(flightsLocations);
           }
           else if (element.status === "scheduled") {
 
             if (arrivingSoon(hrs, flightHrs, min, flightMin)) {
-              console.log("Arriving soon: ", element);
-              numFlight++;
               departingSoon.set(element.flight_iata, { arr_iata: element.arr_iata, dep_time: flightHrs + ':' + flightMin });
+              numFlight = departingSoon.size;
             }
 
           }
@@ -306,12 +306,13 @@
 
           if (element.location !== null) {
             flightsLocations[counterFlights++] = element.location;
+            console.log(flightsLocations);
           }
 
           if (element.status === "active") {
             if (arrivingSoon(hrs, flightHrs, min, flightMin)) {
-              numLanding++;
               landingSoon.set(element.flight_iata, { dep_iata: element.dep_iata, arr_time: flightHrs + ':' + flightMin });
+              numLanding = landingSoon.size;
             }
           }
         });
@@ -319,15 +320,6 @@
         document.getElementById('numLanding').innerHTML = numLanding;
       });
 
-      // socket.on("weather", function (msg) {
-      //           console.log(JSON.stringify(msg));
-      //           document.getElementById("tempeture").innerHTML = msg.temp;
-      //           //document.getElementById("icon").innerHTML = msg.icon;
-      //           var icon = msg.icon;
-      //           document.getElementById("iconIMG").src = "./icons/"+msg.icon+".png";
-      //           document.getElementById("description").innerHTML = JSON.parse(msg.description);
-
-      //       });
     }
     function resetInfo() {
       socket.emit('resetDB');
@@ -387,12 +379,12 @@
     }
     function flightsTable() {
       let table = document.getElementById("flightsTable");
-      let row = table.insertRow(-1);
-      let cell1 = row.insertCell(0);
-      let cell2 = row.insertCell(1);
-      let cell3 = row.insertCell(2);
-
       for (let key of departingSoon.keys()) {
+        let row = table.insertRow(-1);
+        let cell1 = row.insertCell(0);
+        let cell2 = row.insertCell(1);
+        let cell3 = row.insertCell(2);
+
         cell1.innerHTML = key;
         cell2.innerHTML = departingSoon.get(key).arr_iata;
         cell3.innerHTML = departingSoon.get(key).dep_time;
@@ -455,12 +447,12 @@
     }
     function landingsTable() {
       let table = document.getElementById("LandingsTable");
-      let row = table.insertRow(-1);
-      let cell1 = row.insertCell(0);
-      let cell2 = row.insertCell(1);
-      let cell3 = row.insertCell(2);
-
       for (let key of landingSoon.keys()) {
+        let row = table.insertRow(-1);
+        let cell1 = row.insertCell(0);
+        let cell2 = row.insertCell(1);
+        let cell3 = row.insertCell(2);
+
         cell1.innerHTML = key;
         cell2.innerHTML = landingSoon.get(key).dep_iata;
         cell3.innerHTML = landingSoon.get(key).arr_time;

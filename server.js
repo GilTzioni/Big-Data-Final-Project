@@ -95,14 +95,16 @@ const fakeData = Array.from([
     location: null,
     status: "scheduled",
     dep_time: {
-      scheduled: "2022-09-10T04:17:00+00:00",
-      estimated: "2022-09-10T04:17:00+00:00",
-      actual: null
+      scheduled: "2022-09-11T04:17:00+00:00",
+      estimated: "2022-09-11T04:17:00+00:00",
+      actual: null,
+      timezone: 'America/Los_Angeles'
     },
     arr_time: {
-      scheduled: "2022-09-10T09:22:00+00:00",
-      estimated: "2022-09-10T09:22:00+00:00",
-      actual: null
+      scheduled: "2022-09-11T09:22:00+00:00",
+      estimated: "2022-09-11T09:22:00+00:00",
+      actual: null,
+      timezone: 'America/Los_Angeles'
     }
   },
   {
@@ -112,14 +114,15 @@ const fakeData = Array.from([
     location: null,
     status: "landed",
     dep_time: {
-      scheduled: "2022-09-10T04:17:00+00:00",
-      estimated: "2022-09-10T04:17:00+00:00",
-      actual: "2022-09-10T04:18:00+00:00"
+      scheduled: "2022-09-11T04:17:00+00:00",
+      estimated: "2022-09-11T04:17:00+00:00",
+      actual: "2022-09-11T04:18:00+00:00",
+
     },
     arr_time: {
-      scheduled: "2022-09-10T09:23:35+00:00",
-      estimated: "2022-09-10T09:23:35+00:00",
-      actual: "2022-09-10T11:18:00+00:00"
+      scheduled: "2022-09-11T09:23:35+00:00",
+      estimated: "2022-09-11T09:23:35+00:00",
+      actual: "2022-09-11T11:18:00+00:00"
     }
   },
   {
@@ -138,13 +141,13 @@ const fakeData = Array.from([
     },
     status: "active",
     dep_time: {
-      scheduled: "2022-09-10T04:23:35+00:00",
-      estimated: "2022-09-10T04:23:35+00:00",
-      actual: "2022-09-10T04:18:00+00:00"
+      scheduled: "2022-09-11T04:23:35+00:00",
+      estimated: "2022-09-11T04:23:35+00:00",
+      actual: "2022-09-11T04:18:00+00:00"
     },
     arr_time: {
-      scheduled: "2022-09-10T09:23:35+00:00",
-      estimated: "2022-09-10T09:23:35+00:00",
+      scheduled: "2022-09-11T09:23:35+00:00",
+      estimated: "2022-09-11T09:23:35+00:00",
       actual: null
     }
   },
@@ -164,13 +167,13 @@ const fakeData = Array.from([
     },
     status: "active",
     dep_time: {
-      scheduled: "2022-09-10T04:23:35+00:00",
-      estimated: "2022-09-10T04:23:35+00:00",
+      scheduled: "2022-09-11T04:23:35+00:00",
+      estimated: "2022-09-11T04:23:35+00:00",
       actual: "2022-09-10T04:18:00+00:00"
     },
     arr_time: {
-      scheduled: "2022-09-10T09:23:35+00:00",
-      estimated: "2022-09-10T09:23:35+00:00",
+      scheduled: "2022-09-11T09:23:35+00:00",
+      estimated: "2022-09-11T09:23:35+00:00",
       actual: null
     }
   }
@@ -205,16 +208,13 @@ kafka.flightConsumer.on("data", async (msg) => {
     redis.setLanding(element.flight_iata, element);
   });
 
-//   // let flightsArray = await redis.getAllFlights();
-//   // let landingArray = await redis.getAllLandings();
-
-  io.emit("flight", fakeData);
-  io.emit("landing", fakeData);
-    //  io.emit("weather", );
+  io.emit("flight", flights.data.departures);
+  io.emit("landing", flights.data.arrivals);
 
 }).on("error", (err) => {
   console.error(err);
 })
+
 
 
 
