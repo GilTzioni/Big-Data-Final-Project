@@ -67,7 +67,7 @@
           <img src="../assets/icons/unknown.png" alt="">
         </div>
         <div class="temperature-description">
-          <p> - </p>
+          <!-- <p> - </p> -->
           <div class="location">
             <p>-</p>
           </div>
@@ -150,7 +150,7 @@
         iconElement.innerHTML = `<img src="../assets/icons/${weather.iconId}.png"/>`;
         tempElement.innerHTML = `${weather.temperature.value}°<span>C</span>`;
         descElement.innerHTML = weather.description;
-        locationElement.innerHTML = `${weather.city}, ${weather.country}`;
+        // locationElement.innerHTML = `${weather.city}, ${weather.country}`;
       }
 
       // C to F conversion

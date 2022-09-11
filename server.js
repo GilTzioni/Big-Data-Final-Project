@@ -194,26 +194,27 @@ io.on("connection", async (socket) => {
 });
 
 
-
+io.emit("flight", fakeData);
+io.emit("landing", fakeData);
 // //Consumer kafka
-kafka.flightConsumer.on("data", async (msg) => {
-  let flights = JSON.parse(msg.value);
-  console.log("***** Consumer got data *****");
+// kafka.flightConsumer.on("data", async (msg) => {
+//   let flights = JSON.parse(msg.value);
+//   console.log("***** Consumer got data *****");
 
-  flights.data.arrivals.forEach(element => {
-    redis.setFlight(element.flight_iata, element);
-  });
+//   flights.data.arrivals.forEach(element => {
+//     redis.setFlight(element.flight_iata, element);
+//   });
 
-  flights.data.departures.forEach(element => {
-    redis.setLanding(element.flight_iata, element);
-  });
+//   flights.data.departures.forEach(element => {
+//     redis.setLanding(element.flight_iata, element);
+//   });
 
-  io.emit("flight", flights.data.departures);
-  io.emit("landing", flights.data.arrivals);
+//   io.emit("flight", flights.data.departures);
+//   io.emit("landing", flights.data.arrivals);
 
-}).on("error", (err) => {
-  console.error(err);
-})
+// }).on("error", (err) => {
+//   console.error(err);
+// })
 
 
 
